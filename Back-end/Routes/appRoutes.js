@@ -18,6 +18,7 @@ module.exports = (app) => {
     app.route(baseUrl + '/rooms/roomDetails/:roomDetailId').get(roomController.get_room_details_by_roomDetailId);
     app.route(baseUrl + '/rooms/roomDetails/users/:userFromId/:userToId').get(roomController.checkRoomDetailBetWeenUsers);
 
+
     /*Carts Controller */
     app.route(baseUrl + '/carts').post(cartController.create_new_cart)
     app.route(baseUrl + '/carts/users/:userId').get(cartController.get_cart_by_userId_and_status)

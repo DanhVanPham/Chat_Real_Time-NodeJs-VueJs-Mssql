@@ -1,4 +1,4 @@
-import {get } from '../utils/apiCaller';
+import {get, post } from '../utils/apiCaller';
 
 class RoomService {
     async getRoomDetailsByUserId(userId) {
@@ -6,8 +6,11 @@ class RoomService {
     }
 
     async checkRoomDetailsExistBetweenTwoUsers(credentials) {
-        console.log(credentials);
         return await get(`/rooms/roomDetails/users/${credentials.userFromId}/${credentials.userToId}`, {}, {});
+    }
+
+    async createNewRoom(credentials) {
+        return await post('/rooms', {}, credentials, {});
     }
 }
 

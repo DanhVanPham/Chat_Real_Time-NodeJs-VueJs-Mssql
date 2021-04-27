@@ -173,12 +173,31 @@ export default {
       let response = await this.checkRoomDetailsExist(credentials);
       if (response === 200) {
         console.log(this.currentRoomDetail);
+        this.letChat(this.currentRoomDetail);
       } else {
-        console.log("Tạo room đi");
+        let newRoomDetail = {
+          roomNameFrom: this.fullNameSelf,
+          roomNameTo: userTo.fullName,
+          roomAvatarFrom: this.avatarSelf,
+          roomAvatarTo: userTo.avatar,
+          userFromId: this.userIdSelf,
+          userToId: userTo.userId,
+        };
+        let response = await this.createRoomDetails(newRoomDetail);
+        if (response === 200) {
+          Vue.toasted.show("Create new room successfully").goAway(1500);
+          this.letChat(this.currentRoomDetail);
+        } else {
+          Vue.toasted.show("Create new room failed!").goAway(1500);
+        }
       }
     },
     ...mapActions("user", ["logout", "searchUsers"]),
-    ...mapActions("room", ["getRoomByUser", "checkRoomDetailsExist"]),
+    ...mapActions("room", [
+      "getRoomByUser",
+      "createRoomDetails",
+      "checkRoomDetailsExist",
+    ]),
     ...mapActions("message", ["getListMessagesByRoomDetail"]),
   },
   created() {

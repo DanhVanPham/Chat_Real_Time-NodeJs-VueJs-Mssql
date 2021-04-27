@@ -71,7 +71,14 @@ exports.create_new_rooms = (req, res) => {
                             if (err) {
                                 res.status(400).send(err);
                             }
-                            res.status(200).send("Create room successfully.");
+                            RoomDetailModel.getRoomDetailByUserIdAndRoomId(req.body.userFromId, resul.roomId, (error, result) => {
+                                if (error) {
+                                    return res.status(400).send(error);
+                                }
+                                if (result && result.length !== 0) {
+                                    return res.status(200).send(result[0]);
+                                }
+                            })
                         })
                     })
                 }
@@ -115,16 +122,26 @@ exports.get_room_details_by_roomDetailId = (req, res) => {
 
 exports.checkRoomDetailBetWeenUsers = (req, res) => {
     if (req.params.userFromId && req.params.userToId) {
-        RoomDetailModel.checkExistRoomDetailsBetweenUsers(req.params.userFromId, req.params.userToId, (error, result) => {
+        RoomDetailModel.checkTotalMemberRoomDetails(req.params.userFromId, req.params.userToId, (error, result) => {
             if (error) {
                 return res.status(400).send("Get Room Details failed!");
             }
-            if (result && result.length !== 0) {
-                return res.status(200).send(result);
+            if (result && result.length === 1 && result[0].COUNT === 2) {
+                RoomDetailModel.checkExistRoomDetailsBetweenUsers(req.params.userFromId, req.params.userToId, (error, result) => {
+                    if (error) {
+                        return res.status(400).send("Get Room Details failed!");
+                    }
+                    if (result && result.length !== 0) {
+                        return res.status(200).send(result[0]);
+                    } else {
+                        return res.status(404).send("Get Room Details does not found!");
+                    }
+                })
             } else {
                 return res.status(404).send("Get Room Details does not found!");
             }
         })
+
     } else {
         res.status(400).send("Bad Request!");
     }

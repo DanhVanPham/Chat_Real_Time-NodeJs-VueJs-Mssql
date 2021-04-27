@@ -14,7 +14,11 @@ const mutations = {
         state.messages = credential;
     },
     [ADD_MESSAGE]: (state, credential) => {
-        state.messages.push(credential);
+        if (state.messages.length === 0) {
+            state.messages.push(credential);
+        } else {
+            state.messages.push(credential);
+        }
     }
 }
 
@@ -37,8 +41,8 @@ const actions = {
 
     async createMessage({ commit }, credential) {
         try {
-            console.log(credential);
             var response = await MessageService.createNewMessage(credential);
+            console.log(response)
             if (response.status === 200) {
                 await commit(ADD_MESSAGE, credential);
                 return response.status;

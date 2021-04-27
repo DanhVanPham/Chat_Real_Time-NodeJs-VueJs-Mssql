@@ -13,18 +13,24 @@ var RoomDetails = function(roomDetail) {
 }
 
 RoomDetails.create_new_room_details_two_users = (body, room, callback) => {
-    if (!body.roomName) {
-        body.roomName = '';
+    if (!body.roomNameFrom) {
+        body.roomNameFrom = '';
     }
-    if (!body.roomAvatar) {
-        body.roomAvatar = '';
+    if (!body.roomNameTo) {
+        body.roomNameTo = '';
+    }
+    if (!body.roomAvatarFrom) {
+        body.roomAvatarFrom = '';
+    }
+    if (!body.roomAvatarTo) {
+        body.roomAvatarTo = '';
     }
     var defaultStatus = 1;
     connection.then(() => {
         return sql.query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values('" +
-            body.roomName + "', '" + body.roomAvatar + "', '" +
+            body.roomNameTo + "', '" + body.roomAvatarTo + "', '" +
             room.roomId + "', '" + body.userFromId + "', " + defaultStatus + "), ('" +
-            body.roomName + "', '" + body.roomAvatar + "', '" +
+            body.roomNameFrom + "', '" + body.roomAvatarFrom + "', '" +
             room.roomId + "', '" + body.userToId + "', " + defaultStatus + ")");
     }).then(result => {
         callback(null, result);
@@ -93,6 +99,17 @@ RoomDetails.checkExistRoomDetailsBetweenUsers = (userFromId, userToId, callback)
     var defaultStatus = 1;
     connection.then(() => {
         return sql.query("SELECT * FROM RoomDetails WHERE roomId in (SELECT roomId FROM RoomDetails WHERE userId = '" + userToId + "') and userId = '" + userFromId + "' and status =" + defaultStatus)
+    }).then(result => {
+        callback(null, result.recordsets[0]);
+    }).catch(error => {
+        callback(error, null);
+    })
+}
+
+RoomDetails.checkTotalMemberRoomDetails = (userFromId, userToId, callback) => {
+    var defaultStatus = 1;
+    connection.then(() => {
+        return sql.query("SELECT COUNT(*) as 'COUNT' FROM RoomDetails WHERE roomId in (SELECT roomId FROM RoomDetails WHERE roomId in (SELECT roomId FROM RoomDetails WHERE userId = '" + userToId + "')  and userId = '" + userFromId + "' and status = " + defaultStatus + ")");
     }).then(result => {
         callback(null, result.recordsets[0]);
     }).catch(error => {
