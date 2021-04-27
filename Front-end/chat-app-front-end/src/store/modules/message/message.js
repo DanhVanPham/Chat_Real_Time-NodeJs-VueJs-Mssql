@@ -14,11 +14,8 @@ const mutations = {
         state.messages = credential;
     },
     [ADD_MESSAGE]: (state, credential) => {
-        if (state.messages.length === 0) {
-            state.messages.push(credential);
-        } else {
-            state.messages.push(credential);
-        }
+        state.messages = state.messages || [];
+        state.messages.push(credential);
     }
 }
 

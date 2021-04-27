@@ -57,11 +57,11 @@ export default {
           roomId: this.currentRoom.roomId,
         };
         let response = await this.createMessage(credential);
-        console.log(response);
         if (response === 200) {
           this.message = "";
           console.log(this.messages);
         }
+        console.log(this.messages);
       }
     },
     ...mapActions("message", ["getListMessagesByRoomDetail", "createMessage"]),
