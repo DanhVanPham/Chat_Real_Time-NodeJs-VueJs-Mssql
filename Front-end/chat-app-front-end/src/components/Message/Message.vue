@@ -1,7 +1,12 @@
 <template>
   <div class="message-wrapper">
     <div class="message left" v-if="this.userId !== message.sender">
-      <img :src="this.avatar" width="30" height="30" alt="user" />
+      <img
+        :src="this.currentRoom.roomAvatar"
+        width="30"
+        height="30"
+        alt="user"
+      />
       <div class="display">
         <div class="display-name left">
           {{ this.currentRoom.roomName }}
@@ -36,6 +41,7 @@ export default {
       avatar: localStorage.getItem("avatar"),
     };
   },
+  created() {},
 };
 </script>
 

@@ -24,7 +24,10 @@ module.exports = (app) => {
     app.route(baseUrl + '/carts/users/:userId').get(cartController.get_cart_by_userId_and_status)
     app.route(baseUrl + '/carts/:cartId').delete(cartController.delete_cart_by_cartId)
         .post(cartController.add_userId_in_cart_details)
-        .patch(cartController.remove_user_in_cart)
+        .patch(cartController.remove_user_in_cart).get(cartController.get_cart_details_by_cart_id);
+
+    /*Cart Detail Controller */
+    app.route(baseUrl + '/carts/cartDetails/:cartDetailId').delete(cartController.delete_cart_detail_by_cart_detail_id);
 
     /*Messages Controller */
     app.route(baseUrl + '/messages').post(messageController.createNewMessage);

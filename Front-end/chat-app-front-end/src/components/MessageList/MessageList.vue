@@ -15,7 +15,6 @@ export default {
   props: ["chatMessages", "currentRoom"],
   components: { Message },
   created: function () {
-    console.log(this.chatMessages);
     // this.chatMessages.sort(function (itemA, itemB) {
     //   return itemA.timeStamp - itemB.timeStamp;
     // });

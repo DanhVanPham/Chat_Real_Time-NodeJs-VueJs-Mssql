@@ -19,6 +19,7 @@ const mutations = {
         state.currentRoomDetail = credentials;
     },
     [ADD_ROOM_DETAIL]: (state, credentials) => {
+        state.roomDetails = state.roomDetails || [];
         state.roomDetails.push(credentials);
     }
 };
@@ -57,7 +58,6 @@ const actions = {
     async createRoomDetails({ commit }, credentials) {
         try {
             var response = await RoomService.createNewRoom(credentials);
-            console.log(response.data);
             if (response.status === 200) {
                 await commit(ADD_ROOM_DETAIL, response.data);
                 await commit(CURRENT_ROOM_DETAIL, response.data);
@@ -69,6 +69,20 @@ const actions = {
             return 400;
         }
     },
+    async createNewGroup({ commit }, credentials) {
+        try {
+            let response = await RoomService.createGroupWithCart(credentials);
+            if (response.status === 200) {
+                await commit(ADD_ROOM_DETAIL, response.data);
+                await commit(CURRENT_ROOM_DETAIL, response.data);
+                return response.status;
+            } else {
+                return response.status;
+            }
+        } catch (error) {
+            return 400;
+        }
+    }
 }
 
 export default {

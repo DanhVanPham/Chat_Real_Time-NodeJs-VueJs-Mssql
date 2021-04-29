@@ -86,8 +86,19 @@ export default {
     userName: "",
     password: "",
   }),
+  // sockets: {
+  //   connection: function () {
+  //     console.log("socket connected");
+  //   },
+  //   customEmit: function () {
+  //     console.log(
+  //       'this method was fired by the socket server. eg: io.emit("customEmit", data)'
+  //     );
+  //   },
+  // },
   methods: {
     async loginWithUserNameAndPassword(event) {
+      this.$socket.emit("test", "Test Who");
       event.preventDefault();
       if (this.userName && this.password) {
         var credential = {

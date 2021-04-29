@@ -12,15 +12,18 @@ exports.createNewMessage = (req, res) => {
                 res.status(404).send("Get Room Detail doesn't found!");
             } else {
                 var message = new MessageModel(req.body);
-                MessageModel.create_new_message(message, result[0], (error, resul) => {
+                MessageModel.create_new_message(message, result[0], (error, result) => {
                     if (error) {
                         res.status(400).send("Create new message failed!");
                     }
-                    res.status(200).send("Create new message successfully.");
+                    if (result) {
+                        res.status(200).send("Create new message successfully.");
+                    }
                 })
             }
         })
     } else {
+        console.log(1);
         res.status(400).send("Bad request!");
     }
 }

@@ -27,9 +27,9 @@ RoomDetails.create_new_room_details_two_users = (body, room, callback) => {
     }
     var defaultStatus = 1;
     connection.then(() => {
-        return sql.query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values('" +
+        return sql.query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values(N'" +
             body.roomNameTo + "', '" + body.roomAvatarTo + "', '" +
-            room.roomId + "', '" + body.userFromId + "', " + defaultStatus + "), ('" +
+            room.roomId + "', '" + body.userFromId + "', " + defaultStatus + "), (N'" +
             body.roomNameFrom + "', '" + body.roomAvatarFrom + "', '" +
             room.roomId + "', '" + body.userToId + "', " + defaultStatus + ")");
     }).then(result => {
@@ -47,7 +47,7 @@ RoomDetails.create_new_room_details_multi_users = (listCart, body, room, callbac
         var defaultStatus = 1;
         connection.then(() => {
             for (let i = 0; i < listCart.length; i++) {
-                sql.query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values('" +
+                sql.query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values(N'" +
                     body.roomName + "', '" + body.roomAvatar + "', '" +
                     room.roomId + "', '" + listCart[i].userId + "', " + defaultStatus + ")");
             }

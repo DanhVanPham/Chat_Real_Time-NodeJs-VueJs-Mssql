@@ -39,7 +39,6 @@ const actions = {
     async createMessage({ commit }, credential) {
         try {
             var response = await MessageService.createNewMessage(credential);
-            console.log(response)
             if (response.status === 200) {
                 await commit(ADD_MESSAGE, credential);
                 return response.status;

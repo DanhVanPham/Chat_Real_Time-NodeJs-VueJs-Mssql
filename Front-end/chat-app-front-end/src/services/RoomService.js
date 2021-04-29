@@ -12,6 +12,9 @@ class RoomService {
     async createNewRoom(credentials) {
         return await post('/rooms', {}, credentials, {});
     }
+    async createGroupWithCart(credentials) {
+        return await post(`/rooms`, {}, credentials, {});
+    }
 }
 
 export default new RoomService();

@@ -11,18 +11,16 @@
       ></MessageList>
       <div ref="scrollable"></div>
     </div>
-    <div>
-      <form class="chat-box-input">
-        <div class="input-field">
-          <input
-            type="text"
-            placeholder="Input messages..."
-            name="message"
-            class="input message"
-            v-model="message"
-            @keydown.enter="sendMessage($event)"
-          />
-        </div>
+    <form class="chat-box-input">
+      <div class="input-field">
+        <input
+          type="text"
+          placeholder="Input messages..."
+          name="message"
+          class="input message"
+          v-model="message"
+          @keydown.enter="sendMessage($event)"
+        />
         <button
           class="icon"
           :disabled="!this.message"
@@ -30,14 +28,14 @@
         >
           <img src="../assets/send.png" alt="Send" />
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
 import MessageList from "../components/MessageList/MessageList.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   components: { MessageList },
   props: ["currentRoom", "userIdSelf"],
@@ -47,8 +45,39 @@ export default {
   computed: {
     ...mapGetters("message", ["messages"]),
   },
+  updated: function () {
+    this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
+  },
+  watch: {
+    chatMessages: function (newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
+      }
+    },
+  },
+  sockets: {
+    received: function (data) {
+      console.log(data);
+      console.log(this.userIdSelf);
+      this.addMessage(data);
+      this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
+    },
+  },
   methods: {
     async sendMessage(event) {
+      this.$socket.emit("message", {
+        content: this.message,
+        sender: this.userIdSelf,
+        roomId: this.currentRoom.roomId,
+      });
+      // this.$socket.emit("message", {
+      //   content: this.message,
+      //   sender: this.userIdSelf,
+      //   roomId: this.currentRoom.roomId,
+      // });
+      // this.socket.on("received", (event) => {
+      //   console.log(event);
+      // });
       event.preventDefault();
       if (this.message) {
         let credential = {
@@ -59,33 +88,37 @@ export default {
         let response = await this.createMessage(credential);
         if (response === 200) {
           this.message = "";
-          console.log(this.messages);
         }
-        console.log(this.messages);
       }
+      this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
     },
     ...mapActions("message", ["getListMessagesByRoomDetail", "createMessage"]),
+    ...mapMutations("message", ["addMessage"]),
   },
   async created() {
     await this.getListMessagesByRoomDetail(this.currentRoom.roomDetailId);
+    this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
   },
 };
 </script>
 
 <style scoped>
+/* Chat box Right */
+
 .chat-box {
-  /* width: 800px; */
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
   background: rgb(252, 251, 251);
-  margin-top: 10px;
-  border-radius: 32px;
+  border-top-right-radius: 32px;
   border-bottom-right-radius: 16px;
-  border-bottom-left-radius: 16px;
   text-decoration: none;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  justify-content: stretch;
 }
+
+/* Chat box header */
+
 .chat-box-header {
   display: flex;
   flex-direction: row;
@@ -94,83 +127,31 @@ export default {
   height: 10vh;
   border-bottom: 1px solid #dee1e2;
   box-sizing: border-box;
+  flex-grow: 1;
 }
+
 .chat-box-header .avatar {
   width: 20%;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 0 10px;
 }
 
 .chat-box-header h6 {
-  font-size: 20px;
+  font-size: 24px;
+  font-weight: 600;
   margin-left: 5px;
 }
 
+/* Chat box message */
+
 .chat-box-message {
-  height: 71.5vh;
+  height: 75vh;
   overflow: auto;
+  flex-grow: 1;
 }
 
-.chat-box-input {
-  height: 8vh;
-  align-items: center;
-  background-color: rgb(216, 220, 226);
-  border-bottom-right-radius: 16px;
-}
-
-.input-field {
-  position: relative;
-  width: 90%;
-  float: left;
-}
-
-.input-field .input {
-  width: 100%;
-  height: 36px;
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0px 8px 15px rgba(2, 61, 255, 0.1);
-  outline: none;
-  padding-left: 10px;
-  transition: 0.5s ease-in-out;
-  margin: 10px;
-}
-.input-field .input:focus {
-  box-shadow: 0px 2px 8px rgba(13, 227, 255, 0.952);
-}
-.input-field .input ::placeholder {
-  padding-left: 16px;
-}
-
-.icon {
-  margin-left: 26px;
-  margin-top: 8px;
-  width: 40px;
-  box-sizing: border-box;
-  text-align: center;
-  cursor: pointer;
-  display: inline-block;
-  vertical-align: middle;
-  height: 36px;
-  border: none;
-  background-color: rgb(216, 220, 226);
-}
-
-.icon img {
-  display: block;
-  width: 24px;
-  height: 24px;
-  margin: 0 auto;
-  transition: 0.5s ease-in-out;
-}
-
-.icon img:hover {
-  width: 28px;
-  height: 28px;
-}
 .chat-box-message::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #f5f5f5;
@@ -193,146 +174,118 @@ export default {
   );
 }
 
-@media screen and (max-width: 1201px) {
-  .input-field {
-    width: 88%;
-  }
+/* Chat box input */
+
+.chat-box-input {
+  flex-grow: 1;
+  height: auto;
+  background-color: transparent;
+  border-bottom-right-radius: 16px;
+  border-top: 1px solid #dee1e2;
 }
 
-@media screen and (max-width: 1001px) {
-  .input-field {
-    width: 86%;
-  }
+.input-field {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
-@media screen and (max-width: 860px) {
-  .input-field {
-    width: 84%;
-  }
-  .icon {
-    margin-left: 18px;
-    margin-top: 12px;
-    width: 30px;
-    height: 30px;
-  }
+.input-field .input {
+  width: 98%;
+  height: 36px;
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0px 8px 15px rgba(2, 61, 255, 0.1);
+  outline: none;
+  padding-left: 10px;
+  transition: 0.5s ease-in-out;
+  margin: 10px 8px;
+}
 
-  .icon img {
-    width: 20px;
-    height: 20px;
-  }
+.input-field .input:focus {
+  box-shadow: 0px 2px 8px rgba(13, 227, 255, 0.952);
+}
 
-  .icon img:hover {
-    width: 22px;
-    height: 22px;
-  }
-  .chat-box-message::-webkit-scrollbar {
-    width: 6px;
-  }
+.input-field .input ::placeholder {
+  padding-left: 16px;
+}
+
+.icon {
+  width: 60px;
+  box-sizing: border-box;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 30%;
+  transform: translateY(-30%);
+  height: 36px;
+  border: none;
+  background-color: transparent;
+}
+
+.icon img {
+  display: block;
+  width: 26px;
+  height: 26px;
+  line-height: 36px;
+  margin: 0 auto;
+  transition: all 0.5s ease-in-out;
+}
+
+.icon img:hover {
+  width: 28px;
+  height: 28px;
 }
 
 @media screen and (max-width: 760px) {
-  .chat-box {
-    margin: 0 auto;
-    background: rgb(252, 251, 251);
-    margin-top: 10px;
-    border-radius: 32px;
-    border-bottom-right-radius: 16px;
-    border-bottom-left-radius: 16px;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-  }
-  .chat-box-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    height: 10vh;
-    border-bottom: 1px solid #dee1e2;
-    box-sizing: border-box;
-  }
-  .chat-box-header .avatar {
-    width: 20%;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-
-  .chat-box-header h6 {
-    font-size: 20px;
-    margin-left: 5px;
-  }
-
-  .chat-box-message {
-    height: 80vh;
-    overflow: auto;
-  }
-
-  .chat-box-input {
-    height: 8.5vh;
-    align-items: center;
-    background-color: rgb(216, 220, 226);
-    border-radius: 0px;
-  }
-  .input-field {
-    width: 88%;
+  .input-field .input {
+    margin: 10px 8px 0 8px;
   }
 }
 
 @media screen and (max-width: 550px) {
-  .input-field {
-    width: 84%;
-  }
-  .icon {
-    margin-left: 16px;
-  }
-
-  .icon img {
-    width: 20px;
-    height: 20px;
-  }
-
-  .icon img:hover {
-    width: 22px;
-    height: 22px;
-  }
-}
-
-@media screen and (max-width: 460px) {
-  .chat-box-header h6 {
-    font-size: 17px;
-    margin-left: 5px;
-  }
-  .input-field {
-    width: 82%;
-  }
   .input-field .input {
-    height: 28px;
+    height: 32px;
+    border-radius: 14px;
   }
+
+  .input-field .input ::placeholder {
+    padding-left: 10px;
+  }
+
   .icon {
-    margin-top: 8px;
+    width: 40px;
+    height: 32px;
   }
 
   .icon img {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
+    line-height: 32px;
   }
+
   .icon img:hover {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
   }
 }
 @media screen and (max-width: 350px) {
   .input-field {
-    width: 80%;
+    width: 95%;
   }
-}
-@media screen and (max-width: 320px) {
-  .input-field {
-    width: 72%;
-  }
+
+  /* .input-field .input {
+    width: 98%;
+    height: 36px;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0px 8px 15px rgba(2, 61, 255, 0.1);
+    outline: none;
+    padding-left: 10px;
+    transition: 0.5s ease-in-out;
+    margin: 10px 8px;
+  } */
 }
 </style>

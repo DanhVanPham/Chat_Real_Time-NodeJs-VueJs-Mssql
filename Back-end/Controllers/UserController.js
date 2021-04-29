@@ -19,8 +19,8 @@ exports.login_user_password = async(req, res) => {
         }
         try {
             const user = result[0];
-            const { userId, userName, firstName, lastName } = user;
-            const token = await generateToken(res, userId, userName, firstName, lastName);
+            const { userId, userName, fullName } = user;
+            const token = await generateToken(res, userId, userName, fullName);
             res.cookie("token", token[0], token[1]);
             return res.status(200).send(user);
         } catch (err) {

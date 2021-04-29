@@ -44,7 +44,15 @@ exports.create_new_rooms = (req, res) => {
                                                         if (error) {
                                                             res.status(400).send("Delete Cart Details failed!");
                                                         }
-                                                        res.status(200).send("Create room successfully.");
+                                                        RoomDetailModel.getRoomDetailByUserIdAndRoomId(listCart[0].userId, resul.roomId, (error, result) => {
+                                                            if (error) {
+                                                                return res.status(400).send(error);
+                                                            }
+                                                            console.log(result);
+                                                            if (result && result.length !== 0) {
+                                                                return res.status(200).send(result[0]);
+                                                            }
+                                                        })
                                                     })
                                                 })
                                             }

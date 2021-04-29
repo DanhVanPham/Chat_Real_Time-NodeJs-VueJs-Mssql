@@ -53,10 +53,10 @@ Carts.getCartByUserIdAndStatus = (userId, status, callback) => {
     })
 }
 
-Carts.addUserIdInCartExisted = (cartId, userId, callback) => {
+Carts.addUserIdInCartExisted = (cartId, userId, fullName, callback) => {
     var defaultStatus = 1;
     connection.then(() => {
-        return sql.query("INSERT INTO CartDetails(cartId, userId, status) values('" + cartId + "', '" + userId + "', " + defaultStatus + ")")
+        return sql.query("INSERT INTO CartDetails(cartId, userId, fullName, status) values('" + cartId + "', '" + userId + "', N'" + fullName + "' , " + defaultStatus + ")")
     }).then(result => {
         callback(null, result);
     }).catch(error => {
