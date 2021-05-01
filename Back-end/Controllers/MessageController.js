@@ -23,7 +23,6 @@ exports.createNewMessage = (req, res) => {
             }
         })
     } else {
-        console.log(1);
         res.status(400).send("Bad request!");
     }
 }

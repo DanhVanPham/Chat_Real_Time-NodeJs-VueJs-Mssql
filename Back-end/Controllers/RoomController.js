@@ -48,7 +48,6 @@ exports.create_new_rooms = (req, res) => {
                                                             if (error) {
                                                                 return res.status(400).send(error);
                                                             }
-                                                            console.log(result);
                                                             if (result && result.length !== 0) {
                                                                 return res.status(200).send(result[0]);
                                                             }

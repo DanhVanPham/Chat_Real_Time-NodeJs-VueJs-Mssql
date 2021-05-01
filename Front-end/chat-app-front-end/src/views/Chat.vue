@@ -9,6 +9,7 @@
         :chatMessages="this.messages"
         :currentRoom="currentRoom"
       ></MessageList>
+      <div class="typing" v-if="this.nameTyping">{{ this.nameTyping }}</div>
       <div ref="scrollable"></div>
     </div>
     <form class="chat-box-input">
@@ -41,9 +42,11 @@ export default {
   props: ["currentRoom", "userIdSelf"],
   data: () => ({
     message: "",
+    nameTyping: false,
   }),
   computed: {
     ...mapGetters("message", ["messages"]),
+    ...mapGetters("user", ["user"]),
   },
   updated: function () {
     this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
@@ -54,39 +57,45 @@ export default {
         this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
       }
     },
+    message(value) {
+      value !== ""
+        ? this.$socket.emit("typing", {
+            sender: this.user.fullName,
+            roomId: this.currentRoom.roomId,
+          })
+        : this.$socket.emit("stopTyping", this.currentRoom.roomId);
+    },
   },
   sockets: {
     received: function (data) {
-      console.log(data);
-      console.log(this.userIdSelf);
       this.addMessage(data);
       this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
+    },
+    typing: function (data) {
+      this.nameTyping = data;
+    },
+    stopTyping: function () {
+      this.nameTyping = false;
     },
   },
   methods: {
     async sendMessage(event) {
-      this.$socket.emit("message", {
-        content: this.message,
-        sender: this.userIdSelf,
-        roomId: this.currentRoom.roomId,
-      });
-      // this.$socket.emit("message", {
-      //   content: this.message,
-      //   sender: this.userIdSelf,
-      //   roomId: this.currentRoom.roomId,
-      // });
-      // this.socket.on("received", (event) => {
-      //   console.log(event);
-      // });
       event.preventDefault();
       if (this.message) {
         let credential = {
           content: this.message,
-          sender: this.userIdSelf,
+          sender: this.user.userId,
           roomId: this.currentRoom.roomId,
         };
         let response = await this.createMessage(credential);
         if (response === 200) {
+          this.$socket.emit("message", {
+            content: this.message,
+            sender: this.user.userId,
+            fullName: this.user.fullName,
+            avatar: this.user.avatar,
+            roomId: this.currentRoom.roomId,
+          });
           this.message = "";
         }
       }
@@ -174,6 +183,11 @@ export default {
   );
 }
 
+.typing {
+  font-size: 0.8rem;
+  margin-left: 10px;
+}
+
 /* Chat box input */
 
 .chat-box-input {
@@ -199,6 +213,7 @@ export default {
   box-shadow: 0px 8px 15px rgba(2, 61, 255, 0.1);
   outline: none;
   padding-left: 10px;
+  padding-right: 35px;
   transition: 0.5s ease-in-out;
   margin: 10px 8px;
 }
@@ -269,6 +284,10 @@ export default {
   .icon img:hover {
     width: 26px;
     height: 26px;
+  }
+  .typing {
+    font-size: 0.6rem;
+    margin-left: 10px;
   }
 }
 @media screen and (max-width: 350px) {

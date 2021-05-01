@@ -19,15 +19,15 @@ app.use(cookieParser());
 
 routes(app);
 
-io.on('connection', function(socket) {
+io.on('connection', (socket) => {
 
 
-    socket.on("message", ({ content, sender, roomId }) => {
-        socket.broadcast.to(roomId).emit("received", { content, sender, roomId });
+    socket.on("message", ({ content, sender, roomId, fullName, avatar }) => {
+        socket.broadcast.to(roomId).emit("received", { content, sender, roomId, fullName, avatar });
     })
 
 
-    socket.on("createRoom", function(room) {
+    socket.on("createRoom", (room) => {
         socket.currentRoom = room.roomId;
         socket.join(room.roomId);
     })
@@ -37,8 +37,23 @@ io.on('connection', function(socket) {
         try {
             socket.leave(socket.currentRoom);
         } catch (e) {
-            console.log('[error]', 'leave room :', e);
             socket.emit('error', 'couldnt perform requested action');
         }
     });
+
+    socket.on('typing', ({ sender, roomId }) => {
+        try {
+            socket.broadcast.to(roomId).emit('typing', `${sender} is typing...`);
+        } catch (e) {
+            socket.emit('error', 'couldnt perform requested action');
+        }
+    });
+
+    socket.on('stopTyping', (roomId) => {
+        try {
+            socket.broadcast.to(roomId).emit('stopTyping');
+        } catch (e) {
+            socket.emit('error', 'couldnt perform requested action');
+        }
+    })
 });

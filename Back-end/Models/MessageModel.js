@@ -30,7 +30,7 @@ Messages.create_new_message = (message, roomDetail, callback) => {
 
 Messages.get_list_messages_by_room_detail = (roomDetailId, callback) => {
     connection.then(() => {
-        return mssql.query("SELECT * FROM Messages WHERE messageId in (SELECT messageId FROM Messages WHERE roomDetailId in (SELECT roomDetailId FROM RoomDetails WHERE roomId in(SELECT roomId FROM RoomDetails WHERE roomDetailId = " + roomDetailId + "))) ORDER BY messageId")
+        return mssql.query("SELECT messageId, roomDetailId, content, sender, mes.createdAt, mes.status, users.fullName, users.avatar FROM Messages mes JOIN Users users on mes.sender = users.userId WHERE messageId in (SELECT messageId FROM Messages WHERE roomDetailId in (SELECT roomDetailId FROM RoomDetails WHERE roomId in(SELECT roomId FROM RoomDetails WHERE roomDetailId = " + roomDetailId + "))) ORDER BY messageId")
     }).then(result => {
         callback(null, result.recordset);
     }).catch(error => {

@@ -1,15 +1,10 @@
 <template>
   <div class="message-wrapper">
-    <div class="message left" v-if="this.userId !== message.sender">
-      <img
-        :src="this.currentRoom.roomAvatar"
-        width="30"
-        height="30"
-        alt="user"
-      />
+    <div class="message left" v-if="this.user.userId !== message.sender">
+      <img :src="this.message.avatar" width="30" height="30" alt="user" />
       <div class="display">
         <div class="display-name left">
-          {{ this.currentRoom.roomName }}
+          {{ this.message.fullName }}
         </div>
         <div class="text-wrapper left">
           {{ this.message.content }}
@@ -17,10 +12,16 @@
       </div>
     </div>
     <div class="message right" v-else>
-      <img :src="this.avatar" width="30" height="30" alt="user" class="image" />
+      <img
+        :src="this.user.avatar"
+        width="30"
+        height="30"
+        alt="user"
+        class="image"
+      />
       <div class="display">
         <div class="display-name right">
-          {{ this.name }}
+          {{ this.user.fullName }}
         </div>
         <div class="text-wrapper right">
           {{ this.message.content }}
@@ -32,6 +33,7 @@
 
 <script>
 // import firebase from "firebase";
+import { mapGetters } from "vuex";
 export default {
   props: ["message", "currentRoom"],
   data: () => {
@@ -40,6 +42,9 @@ export default {
       name: localStorage.getItem("fullName"),
       avatar: localStorage.getItem("avatar"),
     };
+  },
+  computed: {
+    ...mapGetters("user", ["user"]),
   },
   created() {},
 };

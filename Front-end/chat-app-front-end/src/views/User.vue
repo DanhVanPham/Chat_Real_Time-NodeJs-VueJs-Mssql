@@ -3,10 +3,10 @@
     <div class="current-user">
       <div class="header-form-user">
         <div class="image-my-self" @click="signOut()">
-          <img :src="this.avatarSelf" alt="avatar" class="avatar-my-self" />
+          <img :src="this.user.avatar" alt="avatar" class="avatar-my-self" />
         </div>
         <div class="display-name-my-self">
-          <div class="name-my-self">{{ this.fullNameSelf }}</div>
+          <div class="name-my-self">{{ this.user.fullName }}</div>
           <div class="status-my-self">Active now</div>
         </div>
         <div class="logout">
@@ -74,7 +74,7 @@
                 </div>
                 <div class="display-name-user">
                   <div class="name-user">{{ room.roomName }}</div>
-                  <div class="message-user">Hello, World</div>
+                  <div class="message-user">{{ room.content }}</div>
                 </div>
                 <div class="current-user-status">
                   <div :class="true"></div>
@@ -112,14 +112,14 @@
       </div>
     </div>
     <div class="content" v-if="this.currentRoomDetail">
-      <Chat :currentRoom="currentRoomDetail" :userIdSelf="userIdSelf" />
+      <Chat :currentRoom="currentRoomDetail" :userIdSelf="this.user.userId" />
     </div>
     <div class="content" v-else>
       <div class="new-image">
-        <img :src="this.avatarSelf" alt="avatar" class="avatar-my-self" />
+        <img :src="this.user.avatar" alt="avatar" class="avatar-my-self" />
       </div>
       <div class="welcome">
-        <h2>Welcome {{ fullNameSelf }},</h2>
+        <h2>Welcome {{ this.user.fullName }},</h2>
         <h3>Let's spread love</h3>
       </div>
     </div>
@@ -137,12 +137,6 @@ export default {
   components: { Chat, Tags },
   data: () => {
     return {
-      avatarSelf: localStorage.getItem("avatar"),
-      fullNameSelf: localStorage.getItem("fullName"),
-      userIdSelf: localStorage.getItem("userId"),
-      currentUserName: localStorage.getItem("fullName"),
-      currentUserPhotoUrl: localStorage.getItem("avatar"),
-      currentUserId: localStorage.getItem("userId"),
       username: "",
       password: "",
       findUser: "",
@@ -156,7 +150,7 @@ export default {
   },
   computed: {
     ...mapGetters("room", ["roomDetails", "currentRoomDetail"]),
-    ...mapGetters("user", ["users"]),
+    ...mapGetters("user", ["users", "user"]),
     ...mapGetters("cart", ["cart", "cartDetails"]),
   },
   sockets: {
@@ -177,6 +171,7 @@ export default {
         this.setCurrentRoomDetail("");
         this.setMessages("");
         this.setCartDetails("");
+        this.setRoomDetails("");
         Vue.toasted.show("Logout successfull.").goAway(1500);
         this.$router.push("/login");
       } else {
@@ -184,8 +179,8 @@ export default {
       }
     },
     async getUserList() {
-      if (this.userIdSelf) {
-        await this.getRoomByUser(this.userIdSelf);
+      if (this.user.userId) {
+        await this.getRoomByUser(this.user.userId);
       }
     },
     async searchUser(event) {
@@ -212,11 +207,11 @@ export default {
           this.$socket.emit("createRoom", this.currentRoomDetail);
         } else {
           let newRoomDetail = {
-            roomNameFrom: this.fullNameSelf,
+            roomNameFrom: this.user.fullName,
             roomNameTo: userTo.fullName,
-            roomAvatarFrom: this.avatarSelf,
+            roomAvatarFrom: this.user.avatar,
             roomAvatarTo: userTo.avatar,
-            userFromId: this.userIdSelf,
+            userFromId: this.user.userId,
             userToId: userTo.userId,
           };
           let response = await this.createRoomDetails(newRoomDetail);
@@ -234,7 +229,7 @@ export default {
     async changeStatusAddMulti() {
       if (!this.statusAddMultiUser) {
         this.statusAddMultiUser = true;
-        let response = await this.getCartByUserId(this.userIdSelf);
+        let response = await this.getCartByUserId(this.user.userId);
         if (response !== 200) {
           this.createCartByUser();
         } else {
@@ -264,8 +259,8 @@ export default {
     },
     async createCartByUser() {
       let credentials = {
-        ownerId: this.userIdSelf,
-        fullName: this.fullNameSelf,
+        ownerId: this.user.userId,
+        fullName: this.user.fullName,
       };
       let response = await this.createNewCart(credentials);
       if (response === 200) {
@@ -317,7 +312,7 @@ export default {
       "addUserInCart",
       "getCartDetails",
     ]),
-    ...mapMutations("room", ["setCurrentRoomDetail"]),
+    ...mapMutations("room", ["setCurrentRoomDetail", "setRoomDetails"]),
     ...mapMutations("message", ["setMessages"]),
     ...mapMutations("cart", ["setCartDetails"]),
   },
