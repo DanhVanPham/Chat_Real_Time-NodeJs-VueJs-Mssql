@@ -331,12 +331,10 @@ export default {
     ...mapMutations("cart", ["setCartDetails"]),
   },
   created() {
-    console.log(this.user);
     if (localStorage.getItem("userId") === null) {
       this.$router.push("/login");
     }
     this.getUserList();
-
     window.onbeforeunload = () => {
       this.$socket.emit("leave");
     };

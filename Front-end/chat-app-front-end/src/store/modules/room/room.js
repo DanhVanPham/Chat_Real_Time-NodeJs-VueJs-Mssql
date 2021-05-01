@@ -1,5 +1,5 @@
 import RoomService from '../../../services/RoomService';
-import { SET_ROOM_DETAILS, CURRENT_ROOM_DETAIL, ADD_ROOM_DETAIL } from '../room/mutation-type';
+import { SET_ROOM_DETAILS, CURRENT_ROOM_DETAIL, ADD_ROOM_DETAIL, SET_MESSAGES_ROOM_DETAIL } from '../room/mutation-type';
 
 const state = {
     roomDetails: [],
@@ -9,6 +9,9 @@ const state = {
 const getters = {
     roomDetails(state) { return state.roomDetails },
     currentRoomDetail(state) { return state.currentRoomDetail },
+    checkRoomDetailsExist(state) {
+        return (roomId) => state.roomDetails.findIndex(room => room.roomId === roomId);
+    }
 };
 
 const mutations = {
@@ -21,6 +24,14 @@ const mutations = {
     [ADD_ROOM_DETAIL]: (state, credentials) => {
         state.roomDetails = state.roomDetails || [];
         state.roomDetails.push(credentials);
+    },
+    [SET_MESSAGES_ROOM_DETAIL]: (state, credentials) => {
+        state.roomDetails = state.roomDetails || [];
+        if (credentials.index !== -1) {
+            state.roomDetails[credentials.index].content = credentials.content;
+            state.roomDetails[credentials.index].fullName = credentials.fullName;
+            state.roomDetails[credentials.index].sender = credentials.sender;
+        }
     }
 };
 
@@ -61,7 +72,7 @@ const actions = {
             if (response.status === 200) {
                 await commit(ADD_ROOM_DETAIL, response.data);
                 await commit(CURRENT_ROOM_DETAIL, response.data);
-                return response.status;
+                return response;
             } else {
                 return response.status;
             }

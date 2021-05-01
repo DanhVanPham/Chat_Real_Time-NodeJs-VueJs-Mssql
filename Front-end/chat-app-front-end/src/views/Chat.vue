@@ -45,6 +45,7 @@ export default {
     nameTyping: false,
   }),
   computed: {
+    ...mapGetters("room", ["roomDetails", "checkRoomDetailsExist"]),
     ...mapGetters("message", ["messages"]),
     ...mapGetters("user", ["user"]),
   },
@@ -77,6 +78,13 @@ export default {
     stopTyping: function () {
       this.nameTyping = false;
     },
+    latestMessageInCurrentRoomDetails: async function (data) {
+      var index = await this.checkRoomDetailsExist(data.roomId);
+      if (index !== -1) {
+        data["index"] = index;
+        this.setMessagesRoomDetails(data);
+      }
+    },
   },
   methods: {
     async sendMessage(event) {
@@ -96,6 +104,12 @@ export default {
             avatar: this.user.avatar,
             roomId: this.currentRoom.roomId,
           });
+          this.$socket.emit("latestMessageInCurrentRoomDetails", {
+            content: this.message,
+            sender: this.user.userId,
+            fullName: this.user.fullName,
+            roomId: this.currentRoom.roomId,
+          });
           this.message = "";
         }
       }
@@ -103,6 +117,7 @@ export default {
     },
     ...mapActions("message", ["getListMessagesByRoomDetail", "createMessage"]),
     ...mapMutations("message", ["addMessage"]),
+    ...mapMutations("room", ["setMessagesRoomDetails"]),
   },
   async created() {
     await this.getListMessagesByRoomDetail(this.currentRoom.roomDetailId);

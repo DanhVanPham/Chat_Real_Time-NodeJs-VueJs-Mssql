@@ -21,6 +21,9 @@ routes(app);
 
 io.on('connection', (socket) => {
 
+    socket.on("latestMessageInCurrentRoomDetails", ({ content, sender, roomId, fullName }) => {
+        io.emit("latestMessageInCurrentRoomDetails", { content, sender, roomId, fullName });
+    })
 
     socket.on("message", ({ content, sender, roomId, fullName, avatar }) => {
         socket.broadcast.to(roomId).emit("received", { content, sender, roomId, fullName, avatar });
