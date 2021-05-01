@@ -74,7 +74,21 @@
                 </div>
                 <div class="display-name-user">
                   <div class="name-user">{{ room.roomName }}</div>
-                  <div class="message-user">{{ room.content }}</div>
+                  <div
+                    class="message-user"
+                    v-if="user.userId !== room.sender && room.content !== null"
+                  >
+                    {{ room.fullName }}: {{ room.content }}
+                  </div>
+                  <div
+                    class="message-user"
+                    v-else-if="
+                      user.userId === room.sender && room.content !== null
+                    "
+                  >
+                    You: {{ room.content }}
+                  </div>
+                  <div class="message-user" v-else>Let's chat now!</div>
                 </div>
                 <div class="current-user-status">
                   <div :class="true"></div>
@@ -317,6 +331,7 @@ export default {
     ...mapMutations("cart", ["setCartDetails"]),
   },
   created() {
+    console.log(this.user);
     if (localStorage.getItem("userId") === null) {
       this.$router.push("/login");
     }
@@ -563,6 +578,11 @@ export default {
 
 .message-user {
   font-size: 12.5px;
+  width: 180px;
+  margin-left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .current-user-status {

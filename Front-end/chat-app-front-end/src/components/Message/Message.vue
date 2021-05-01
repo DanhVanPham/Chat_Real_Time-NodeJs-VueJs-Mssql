@@ -57,6 +57,7 @@ export default {
   margin-bottom: 10px;
   margin-left: 10px;
   display: block;
+  width: 100%;
 }
 
 .message-wrapper .message {
@@ -69,12 +70,14 @@ export default {
 }
 .message-wrapper .message.right {
   float: right;
+  max-width: 60%;
   justify-content: flex-end;
   align-items: flex-start;
 }
 
 .message-wrapper .message.left {
   justify-content: flex-start;
+  max-width: 80%;
   align-items: flex-end;
 }
 
@@ -86,6 +89,7 @@ export default {
 
 .message-wrapper .message.right .image {
   order: 2;
+  margin-right: 1rem;
 }
 
 .message-wrapper .message.right .display {
@@ -105,15 +109,15 @@ export default {
   color: #a8a9aa;
 }
 .display .display-name.right {
-  /* display: flex;
-  justify-content: flex-end;
-  color: #a8a9aa;
-  margin-right: 14px; */
   display: none;
 }
 .text-wrapper {
   padding: 6px;
   padding-left: 12px;
+  vertical-align: baseline;
+  box-sizing: border-box;
+  word-break: break-all;
+  color: white;
 }
 .text-wrapper.left {
   background: #63676b;
@@ -121,12 +125,10 @@ export default {
   border-bottom-right-radius: 32px;
   border-top-left-radius: 32px;
   border-bottom-left-radius: 6px;
-  color: white;
   margin-left: 10px;
 }
 .text-wrapper.right {
   background-color: #0084ff;
-  color: white;
   border-top-right-radius: 32px;
   border-bottom-right-radius: 6px;
   border-top-left-radius: 32px;

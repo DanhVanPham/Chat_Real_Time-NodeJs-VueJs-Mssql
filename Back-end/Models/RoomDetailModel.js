@@ -65,14 +65,15 @@ RoomDetails.create_new_room_details_multi_users = (listCart, body, room, callbac
 RoomDetails.getRoomDetailsByUserId = (userId, callback) => {
     var defaultStatus = 1;
     connection.then(() => {
-        return sql.query("SELECT roomDetails.*, room.content FROM (SELECT roomDetailId, roomName, roomAvatar, roomId FROM RoomDetails WHERE userId = '" + userId + "') roomDetails " +
+        return sql.query("SELECT roomDetails.*, room.sender, room.content, room.fullName FROM (SELECT roomDetailId, roomName, roomAvatar, roomId FROM RoomDetails WHERE userId = '" + userId + "') roomDetails " +
             " LEFT JOIN ( " +
-            " SELECT roomDetails.roomDetailId, roomDetails.roomName, roomDetails.roomAvatar, roomDetails.roomId, messages.content  FROM RoomDetails roomDetails JOIN (SELECT roomDetails.roomId, max(createdAt) as 'createdAtMess' FROM RoomDetails roomDetails JOIN " +
+            " SELECT roomDetails.roomDetailId, roomDetails.roomName, roomDetails.roomAvatar, roomDetails.roomId, messages.content, messages.sender, users.fullName     FROM RoomDetails roomDetails JOIN (SELECT roomDetails.roomId, max(createdAt) as 'createdAtMess' FROM RoomDetails roomDetails JOIN " +
             " (SELECT roomDetailID, max(createdAt) as 'createdAt' FROM Messages WHERE " +
             " roomDetailId in (SELECT roomDetailId FROM RoomDetails WHERE roomId in " +
             " (SELECT roomId FROM RoomDetails WHERE userId = '" + userId + "' and status = " + defaultStatus + ")) GROUP BY roomDetailId) cs ON roomDetails.roomDetailId = cs.roomDetailId " +
             " GROUP BY roomDetails.roomId) " +
             " custom ON roomDetails.roomId = custom.roomId  " +
+            " JOIN Users users ON roomDetails.userId = users.userId" +
             " JOIN Messages messages ON messages.roomDetailId = roomDetails.roomDetailId and custom.createdAtMess = messages.createdAt WHERE " +
             " roomDetails.status = " + defaultStatus + " and messages.status = " + defaultStatus + ") room " +
             " ON roomDetails.roomId = room.roomId");

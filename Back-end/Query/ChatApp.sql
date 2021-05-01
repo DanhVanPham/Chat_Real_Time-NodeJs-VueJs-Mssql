@@ -6,10 +6,7 @@ create table Users(
 userId    varchar(50)    primary key,
 userName  varchar(25)    not null,
 password  varchar(max)   not null,
-firstName nvarchar(20)   not null,
-lastName  nvarchar(20)   not null,
-dob       date           not null,
-address   nvarchar(max)  not null,
+fullName  nvarchar(50)   not null,
 avatar varchar(max)      null,
 createdAt datetime       not null,
 status    int            not null
@@ -34,11 +31,12 @@ status          int           not null
 create table Messages(
 messageId       varchar(25)   primary key,
 roomDetailId    int   foreign key references RoomDetails(roomDetailId),
-content         nvarchar(50)  not null,
+content         nvarchar(max)  not null,
 sender varchar(50)				foreign key references Users(userId),
 createdAt       datetime      not null,
 status          int           not null
 )
+
 
 create table Carts(
 cartId int identity(1, 1) primary key,
@@ -51,5 +49,6 @@ create table CartDetails(
 cartDetailId int identity(1, 10) primary key,
 cartId       int foreign key references Carts(cartId),
 userId       varchar(50) foreign key references Users(userId),
+fullName     nvarchar(50)    null,
 status bit not null,
 )
