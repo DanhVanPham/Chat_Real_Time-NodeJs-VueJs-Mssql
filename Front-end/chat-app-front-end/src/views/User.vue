@@ -174,6 +174,7 @@ export default {
   },
   methods: {
     async letChat(room) {
+      await this.setMessages("");
       await this.getListMessagesByRoomDetail(room.roomDetailId);
       await this.setCurrentRoomDetail(room);
       this.$socket.emit("leave");
@@ -212,7 +213,7 @@ export default {
     async checkExistAndletChat(userTo) {
       if (!this.statusAddMultiUser) {
         let credentials = {
-          userFromId: this.userIdSelf,
+          userFromId: this.user.userId,
           userToId: userTo.userId,
         };
         let response = await this.checkRoomDetailsExist(credentials);
@@ -232,8 +233,6 @@ export default {
           if (response === 200) {
             Vue.toasted.show("Create new room successfully").goAway(1500);
             this.letChat(this.currentRoomDetail);
-          } else {
-            Vue.toasted.show("Create new room failed!").goAway(1500);
           }
         }
       } else {

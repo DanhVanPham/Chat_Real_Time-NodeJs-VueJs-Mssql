@@ -55,6 +55,7 @@ const actions = {
     async checkRoomDetailsExist({ commit }, credentials) {
         try {
             var response = await RoomService.checkRoomDetailsExistBetweenTwoUsers(credentials);
+            console.log(response);
             if (response.status === 200) {
                 await commit(CURRENT_ROOM_DETAIL, response.data);
                 return response.status;

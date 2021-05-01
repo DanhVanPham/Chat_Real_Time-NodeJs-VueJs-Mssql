@@ -128,13 +128,14 @@ exports.get_room_details_by_roomDetailId = (req, res) => {
 }
 
 exports.checkRoomDetailBetWeenUsers = (req, res) => {
+    console.log(req.params);
     if (req.params.userFromId && req.params.userToId) {
-        RoomDetailModel.checkTotalMemberRoomDetails(req.params.userFromId, req.params.userToId, (error, result) => {
+        RoomDetailModel.checkExistGroupBetweenTwoUsers(req.params.userFromId, req.params.userToId, (error, result) => {
             if (error) {
                 return res.status(400).send("Get Room Details failed!");
             }
-            if (result && result.length === 1 && result[0].COUNT === 2) {
-                RoomDetailModel.checkExistRoomDetailsBetweenUsers(req.params.userFromId, req.params.userToId, (error, result) => {
+            if (result && result.length === 1) {
+                RoomDetailModel.getRoomDetailsBetweenUsers(req.params.userFromId, req.params.userToId, (error, result) => {
                     if (error) {
                         return res.status(400).send("Get Room Details failed!");
                     }

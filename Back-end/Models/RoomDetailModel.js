@@ -106,10 +106,12 @@ RoomDetails.getRoomDetailByUserIdAndRoomId = (sender, roomId, callback) => {
     });
 }
 
-RoomDetails.checkExistRoomDetailsBetweenUsers = (userFromId, userToId, callback) => {
+RoomDetails.getRoomDetailsBetweenUsers = (userFromId, userToId, callback) => {
     var defaultStatus = 1;
+    var defaultCount = 2;
     connection.then(() => {
-        return sql.query("SELECT * FROM RoomDetails WHERE roomId in (SELECT roomId FROM RoomDetails WHERE userId = '" + userToId + "') and userId = '" + userFromId + "' and status =" + defaultStatus)
+        return sql.query("SELECT * FROM RoomDetails WHERE roomId IN (SELECT custom.roomId FROM RoomDetails roomDetail RIGHT JOIN  ( SELECT groupUserFrom.roomId FROM (SELECT roomId FROM RoomDetails WHERE userId = '" + userFromId + "') groupUserFrom  JOIN (SELECT roomId FROM RoomDetails WHERE userId = '" + userToId + "') groupUserTo " +
+            " ON groupUserFrom.roomId = groupUserTo.roomId) custom ON roomDetail.roomId = custom.roomId GROUP BY custom.roomId HAVING COUNT(*) = " + defaultCount + ") and userId = '" + userFromId + "' and status = " + defaultStatus);
     }).then(result => {
         callback(null, result.recordsets[0]);
     }).catch(error => {
@@ -117,10 +119,11 @@ RoomDetails.checkExistRoomDetailsBetweenUsers = (userFromId, userToId, callback)
     })
 }
 
-RoomDetails.checkTotalMemberRoomDetails = (userFromId, userToId, callback) => {
+RoomDetails.checkExistGroupBetweenTwoUsers = (userFromId, userToId, callback) => {
     var defaultStatus = 1;
     connection.then(() => {
-        return sql.query("SELECT COUNT(*) as 'COUNT' FROM RoomDetails WHERE roomId in (SELECT roomId FROM RoomDetails WHERE roomId in (SELECT roomId FROM RoomDetails WHERE userId = '" + userToId + "')  and userId = '" + userFromId + "' and status = " + defaultStatus + ")");
+        return sql.query("SELECT COUNT(*) as 'Count' FROM RoomDetails roomDetail RIGHT JOIN  ( SELECT groupUserFrom.roomId FROM (SELECT roomId FROM RoomDetails WHERE userId = '" + userFromId + "' and status = " + defaultStatus + ") groupUserFrom  JOIN (SELECT roomId FROM RoomDetails WHERE userId = '" + userToId + "' and status = " + defaultStatus + ") groupUserTo " +
+            " ON groupUserFrom.roomId = groupUserTo.roomId) custom ON roomDetail.roomId = custom.roomId GROUP BY custom.roomId HAVING COUNT(*)= 2");
     }).then(result => {
         callback(null, result.recordsets[0]);
     }).catch(error => {
