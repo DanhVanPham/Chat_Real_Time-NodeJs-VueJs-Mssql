@@ -7,10 +7,11 @@ const messageController = require('../Controllers/MessageController.js');
 module.exports = (app) => {
     /* User Controller */
     app.route(baseUrl + '/users').post(userController.create_new_user)
-    app.route(baseUrl + '/users/:id').put(userController.edit_profile).get(userController.searchUserByName);
+    app.route(baseUrl + '/users/:id').put(userController.edit_profile)
     app.route(baseUrl + '/users/login').post(userController.login_user_password)
     app.route(baseUrl + '/users/logout').post(userController.logout);
     app.route(baseUrl + '/users/change-pass').patch(userController.change_password);
+    app.route(baseUrl + '/users/:userId/:search').get(userController.searchUserByName);
 
     /*Room Controller */
     app.route(baseUrl + '/rooms').post(roomController.create_new_rooms);

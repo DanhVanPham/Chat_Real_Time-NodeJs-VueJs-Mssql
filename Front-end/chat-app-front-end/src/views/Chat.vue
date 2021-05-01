@@ -304,10 +304,20 @@ export default {
     font-size: 0.6rem;
     margin-left: 10px;
   }
+  .chat-box-header h6 {
+    font-size: 1rem;
+  }
 }
 @media screen and (max-width: 350px) {
   .input-field {
     width: 95%;
+  }
+  .chat-box-header .avatar {
+    width: 40px;
+    height: 40px;
+  }
+  .chat-box-header h6 {
+    font-size: 0.8rem;
   }
 
   /* .input-field .input {

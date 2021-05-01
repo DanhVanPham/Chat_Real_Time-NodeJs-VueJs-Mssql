@@ -55,7 +55,7 @@ exports.change_password = (req, res) => {
 }
 
 exports.searchUserByName = (req, res) => {
-    UserModel.searchByName(req.params.id, (error, result) => {
+    UserModel.searchByName(req.params.userId, req.params.search, (error, result) => {
         if (error) {
             return res.status(400).send(error);
         }

@@ -76,12 +76,12 @@ Users.editProfile = (userId, account, callback) => {
     }
 }
 
-Users.searchByName = (name, callback) => {
-    if (!name) {
-        name = "";
+Users.searchByName = (userId, search, callback) => {
+    if (!search) {
+        search = "";
     }
     connection.then(() => {
-        return sql.query("SELECT * FROM Users WHERE fullName like '" + name + "%'");
+        return sql.query("SELECT * FROM Users WHERE fullName like '" + search + "%' and userId != '" + userId + "'");
     }).then((result) => {
         callback(null, result.recordset);
     }).catch(error => {

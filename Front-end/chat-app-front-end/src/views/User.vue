@@ -128,7 +128,7 @@
     <div class="content" v-if="this.currentRoomDetail">
       <Chat :currentRoom="currentRoomDetail" :userIdSelf="this.user.userId" />
     </div>
-    <div class="content" v-else>
+    <div class="content content__no__message" v-else>
       <div class="new-image">
         <img :src="this.user.avatar" alt="avatar" class="avatar-my-self" />
       </div>
@@ -200,7 +200,11 @@ export default {
     },
     async searchUser(event) {
       event.preventDefault();
-      await this.searchUsers(this.searchName);
+      let credentials = {
+        userId: this.user.userId,
+        searchName: this.searchName,
+      };
+      await this.searchUsers(credentials);
     },
     changeIcon() {
       if (this.search) {
@@ -366,12 +370,15 @@ export default {
 }
 
 /* Header column user left */
-
+.content__no__message {
+  flex-direction: column;
+}
 .current-user .header-form-user {
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
   flex-grow: 1;
+  max-height: 16vh;
 }
 
 .header-form-user .image-my-self {
@@ -673,6 +680,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     justify-items: center;
+    max-height: 18vh;
   }
   .header-form-user .image-my-self {
     text-align: center;
@@ -703,6 +711,18 @@ export default {
   }
   .user-container .display-name-user .name-user {
     width: 40px;
+  }
+  .content .new-image {
+    margin-top: 20%;
+  }
+
+  .content .new-image .avatar-my-self {
+    width: 150px;
+    height: 150px;
+  }
+
+  .content .welcome {
+    margin-top: 50px;
   }
 }
 @media screen and (max-width: 540px) {
@@ -754,15 +774,15 @@ export default {
     width: 150px;
     height: 150px;
   }
-
-  .content .welcome {
-    margin-top: 40px;
+  .content .new-image {
+    margin-top: 40%;
   }
+
   .content .welcome h2 {
-    font-size: 26px;
+    font-size: 1.2rem;
   }
   .content .welcome h3 {
-    font-size: 24px;
+    font-size: 1rem;
   }
 }
 @media screen and (max-width: 360px) {
@@ -775,6 +795,21 @@ export default {
     margin: 0;
     margin-left: 8px;
     width: 50px;
+  }
+  .header-form-user .image-my-self img.avatar-my-self {
+    width: 40px;
+    height: 40px;
+  }
+  .content .new-image .avatar-my-self {
+    width: 100px;
+    height: 100px;
+  }
+  .content .new-image {
+    margin-top: 60%;
+  }
+
+  .content .welcome {
+    margin-top: 40px;
   }
 }
 </style>

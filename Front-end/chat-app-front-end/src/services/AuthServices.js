@@ -12,7 +12,7 @@ class AuthService {
     }
 
     async searchUserByName(credentials) {
-        return await get(`/users/${credentials}`, {}, {});
+        return await get(`/users/${credentials.userId}/${credentials.searchName}`, {}, {});
     }
 }
 

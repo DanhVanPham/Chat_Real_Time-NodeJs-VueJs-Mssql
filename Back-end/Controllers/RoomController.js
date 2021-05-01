@@ -128,7 +128,6 @@ exports.get_room_details_by_roomDetailId = (req, res) => {
 }
 
 exports.checkRoomDetailBetWeenUsers = (req, res) => {
-    console.log(req.params);
     if (req.params.userFromId && req.params.userToId) {
         RoomDetailModel.checkExistGroupBetweenTwoUsers(req.params.userFromId, req.params.userToId, (error, result) => {
             if (error) {
