@@ -12,10 +12,12 @@ exports.getConnection = async(callback) => {
     }
 }
 
-exports.closeConnection = async() => {
+exports.closeConnection = () => {
     try {
         // try to close the connection pool
-        await connection.close();
+        if (connection) {
+            connection.close();
+        }
 
         // set the pool to null to ensure
         // a new one will be created by getConnection()
@@ -25,7 +27,6 @@ exports.closeConnection = async() => {
         // set the pool to null to ensure
         // a new one will be created by getConnection()
         connection = null;
-        server.log(["error", "data"], "closePool error");
-        server.log(["error", "data"], err);
+        console.log(err);
     }
 }

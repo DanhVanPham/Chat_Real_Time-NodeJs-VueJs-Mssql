@@ -11,101 +11,215 @@ var Carts = function(cart) {
     this.status = room.status;
 }
 
-Carts.createNewCart = (cart, callback) => {
+Carts.createNewCart = async(cart, callback) => {
     var defaultStatus = 1;
     cart.status = defaultStatus;
-    connection.then(() => {
-        return sql.query("Insert into Carts(ownerId, status) values('" + cart.ownerId + "', " + cart.status + ")");
-    }).then((result) => {
-        callback(null, cart);
-    }).catch((err) => {
-        callback(err, null);
-    });
-}
-
-Carts.getCartByCartId = (cartId, status, callback) => {
-    connection.then(() => {
-        return sql.query("SELECT * FROM Carts WHERE cartId = " + cartId + " AND status = " + status);
-    }).then(result => {
-        callback(null, result.recordset[0]);
-    }).catch(error => {
-        callback(error, null);
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("ownerId", sql.VarChar, cart.ownerId)
+                .input("status", sql.Bit, cart.status)
+                .query("Insert into Carts(ownerId, status) values(@ownerId, @status)").then((result) => {
+                    callback(null, cart);
+                }).catch((err) => {
+                    callback(err, null);
+                });
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
-Carts.getCartDetailsByCartId = (cartId, status, callback) => {
-    connection.then(() => {
-        return sql.query("SELECT * FROM CartDetails WHERE cartId = " + cartId + " AND status = " + status);
-    }).then(result => {
-        callback(null, result.recordset);
-    }).catch(error => {
-        callback(error, null);
+Carts.getCartByCartId = async(cartId, status, callback) => {
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("cartId", sql.Int, cartId)
+                .input("status", sql.Bit, status)
+                .query("SELECT * FROM Carts WHERE cartId = @cartId AND status = @status").then(result => {
+                    callback(null, result.recordset[0]);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
-Carts.getCartByUserIdAndStatus = (userId, status, callback) => {
-    connection.then(() => {
-        return sql.query("SELECT * FROM Carts WHERE ownerId = '" + userId + "' and status = " + status);
-    }).then(result => {
-        callback(null, result.recordset[0]);
-    }).catch(error => {
-        callback(error, null);
+Carts.getCartDetailsByCartId = async(cartId, status, callback) => {
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("cartId", sql.Int, cartId)
+                .input("status", sql.Bit, status)
+                .query("SELECT * FROM CartDetails WHERE cartId = @cartId AND status = @status ").then(result => {
+                    callback(null, result.recordset);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
-Carts.addUserIdInCartExisted = (cartId, userId, fullName, callback) => {
+Carts.getCartByUserIdAndStatus = async(userId, status, callback) => {
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("ownerId", sql.VarChar, userId)
+                .input("status", sql.Bit, status)
+                .query("SELECT * FROM Carts WHERE ownerId = @ownerId and status = @status").then(result => {
+                    console.log(2);
+                    console.log(result);
+                    callback(null, result.recordset[0]);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
+    })
+
+}
+
+Carts.addUserIdInCartExisted = async(cartId, userId, fullName, callback) => {
     var defaultStatus = 1;
-    connection.then(() => {
-        return sql.query("INSERT INTO CartDetails(cartId, userId, fullName, status) values('" + cartId + "', '" + userId + "', N'" + fullName + "' , " + defaultStatus + ")")
-    }).then(result => {
-        callback(null, result);
-    }).catch(error => {
-        callback(error, null);
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("cartId", sql.Int, cartId)
+                .input("userId", sql.VarChar, userId)
+                .input("fullName", sql.NVarChar, fullName)
+                .input("status", sql.Bit, defaultStatus)
+                .query("INSERT INTO CartDetails(cartId, userId, fullName, status) values(@cartId, @userId, @fullName, @status)").then(result => {
+                    callback(null, result);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
-Carts.getCartDetailByCartIdAndUserIdAndStatus = (cartId, userId, status, callback) => {
-    connection.then(() => {
-        return sql.query("SELECT * FROM CartDetails WHERE cartId = " + cartId + " and userId = '" + userId + "' and status = '" + status + "'")
-    }).then(result => {
-        callback(null, result.recordset[0]);
-    }).catch(error => {
-        callback(error, null);
+Carts.getCartDetailByCartIdAndUserIdAndStatus = async(cartId, userId, status, callback) => {
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("cartId", sql.Int, cartId)
+                .input("userId", sql.VarChar, userId)
+                .input("status", sql.Bit, status)
+                .query("SELECT * FROM CartDetails WHERE cartId = @cartId and userId = @userId and status = @status").then(result => {
+                    callback(null, result.recordset[0]);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
-Carts.deleteCart = (cartId, callback) => {
+Carts.deleteCart = async(cartId, callback) => {
     var defaultStatus = false;
-    connection.then(() => {
-        return sql.query("UPDATE Carts SET status = '" + defaultStatus + "' WHERE cartId = '" + cartId + "'")
-    }).then(result => {
-        callback(null, result);
-    }).catch(error => {
-        callback(error, null);
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("status", sql.Bit, defaultStatus)
+                .input("cartId", sql.Int, cartId)
+                .query("UPDATE Carts SET status = @status WHERE cartId = @cartId").then(result => {
+                    callback(null, result);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
-Carts.removeUserExistInCart = (cartDetailId, callback) => {
+Carts.removeUserExistInCart = async(cartDetailId, callback) => {
     var defaultStatus = false;
-    connection.then(() => {
-        return sql.query("UPDATE CartDetails SET status = '" + defaultStatus + "' WHERE cartDetailId = " + cartDetailId);
-    }).then(result => {
-        callback(null, result);
-    }).catch(error => {
-        callback(error, null);
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("status", sql.Bit, defaultStatus)
+                .input("cartDetailId", sql.Int, cartDetailId)
+                .query("UPDATE CartDetails SET status = @status WHERE cartDetailId = @cartDetailId").then(result => {
+                    callback(null, result);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
-Carts.deleteAllCartDetailByCartId = (cartId, callback) => {
+Carts.deleteAllCartDetailByCartId = async(cartId, callback) => {
     var defaultStatus = true;
     var changeStatus = false
-    connection.then(() => {
-        return sql.query("UPDATE CartDetails SET status = '" + changeStatus + "' WHERE cartDetailId IN (SELECT cartDetailId FROM CartDetails WHERE cartId = " + cartId + " and status = '" + defaultStatus + "')")
-    }).then(result => {
-        callback(null, result);
-    }).catch(error => {
-        callback(error, null);
+
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("cartId", sql.Int, cartId)
+                .input("status", sql.Bit, defaultStatus)
+                .input("changeStatus", sql.Bit, changeStatus)
+                .query("UPDATE CartDetails SET status = @changeStatus" +
+                    "' WHERE cartDetailId IN (SELECT cartDetailId FROM CartDetails WHERE cartId = @cartId and status = @status)").then(result => {
+                    callback(null, result);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
+
 }
 
 module.exports = Carts;

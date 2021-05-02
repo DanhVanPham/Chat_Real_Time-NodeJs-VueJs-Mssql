@@ -1,10 +1,12 @@
 const CartModel = require('../Models/CartModel.js');
 
-exports.create_new_cart = (req, res) => {
-    CartModel.createNewCart(req.body, (error, result) => {
+exports.create_new_cart = async(req, res) => {
+    console.log(req.body);
+    await CartModel.createNewCart(req.body, (error, result) => {
         if (error) {
             res.status(400).send("Create new Cart failed!");
         } else {
+            console.log(1);
             CartModel.getCartByUserIdAndStatus(result.ownerId, result.status, (err, resul) => {
                 if (err) {
                     res.status(400).send("Get cart by userid and status failed!");
