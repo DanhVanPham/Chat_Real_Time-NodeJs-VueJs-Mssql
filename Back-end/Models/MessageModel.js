@@ -13,28 +13,54 @@ var Messages = function(message) {
     this.status = message.status;
 }
 
-Messages.create_new_message = (message, roomDetail, callback) => {
+Messages.create_new_message = async(message, roomDetail, callback) => {
     var defaultStatus = 1;
     message.messageId = moment().valueOf().toString();
     message.status = defaultStatus;
     message.roomDetailId = roomDetail.roomDetailId;
-    connection.then(() => {
-        return mssql.query("INSERT INTO Messages(messageId, roomDetailId, content, sender, createdAt, status) VALUES('" + message.messageId + "', " + message.roomDetailId + ", '" +
-            message.content + "', '" + message.sender + "', '" + message.createdAt + "', " + message.status + ")");
-    }).then(result => {
-        callback(null, result);
-    }).catch(error => {
-        callback(error, null);
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("messageId", sql.VarChar, message.messageId)
+                .input("roomDetailId", sql.Int, message.roomDetailId)
+                .input("content", sql.NVarChar, message.content)
+                .input("sender", sql.VarChar, message.sender)
+                .input("createdAt", sql.DateTime, message.createdAt)
+                .input("status", sql.Int, message.status)
+                .query("INSERT INTO Messages(messageId, roomDetailId, content, sender, createdAt, status) VALUES(@messageId, " +
+                    " @roomDetailId, @content , @sender, @createdAt, @status)").then(result => {
+                    callback(null, result);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
 }
 
-Messages.get_list_messages_by_room_detail = (roomDetailId, callback) => {
-    connection.then(() => {
-        return mssql.query("SELECT messageId, roomDetailId, content, sender, mes.createdAt, mes.status, users.fullName, users.avatar FROM Messages mes JOIN Users users on mes.sender = users.userId WHERE messageId in (SELECT messageId FROM Messages WHERE roomDetailId in (SELECT roomDetailId FROM RoomDetails WHERE roomId in(SELECT roomId FROM RoomDetails WHERE roomDetailId = " + roomDetailId + "))) ORDER BY messageId")
-    }).then(result => {
-        callback(null, result.recordset);
-    }).catch(error => {
-        callback(error, null);
+Messages.get_list_messages_by_room_detail = async(roomDetailId, callback) => {
+    await connection.getConnection(async(error, result) => {
+        if (error) {
+            callback("Connection to mssql server failed!", null);
+        }
+        if (result) {
+            await result.request()
+                .input("roomDetailId", sql.Int, roomDetailId)
+                .query("SELECT messageId, roomDetailId, content, sender, mes.createdAt, mes.status, users.fullName, users.avatar " +
+                    "FROM Messages mes JOIN Users users on mes.sender = users.userId " +
+                    " WHERE messageId in (SELECT messageId FROM Messages WHERE roomDetailId in (SELECT roomDetailId FROM RoomDetails " +
+                    "WHERE roomId in(SELECT roomId FROM RoomDetails WHERE roomDetailId = @roomDetailId))) ORDER BY messageId").then(result => {
+                    callback(null, result.recordset);
+                }).catch(error => {
+                    callback(error, null);
+                })
+        }
+    }).finally(() => {
+        connection.closeConnection();
     })
 }
 
