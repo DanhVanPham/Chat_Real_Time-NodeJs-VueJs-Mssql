@@ -1,5 +1,5 @@
+const config = require('../Configs/mssqlConfigs');
 const sql = require('mssql');
-const connection = require('./db.js');
 const moment = require('moment');
 
 var Carts = function(cart) {
@@ -11,37 +11,30 @@ var Carts = function(cart) {
     this.status = room.status;
 }
 
-Carts.createNewCart = async(cart, callback) => {
+Carts.createNewCart = (cart, callback) => {
     var defaultStatus = 1;
     cart.status = defaultStatus;
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("ownerId", sql.VarChar, cart.ownerId)
                 .input("status", sql.Bit, cart.status)
                 .query("Insert into Carts(ownerId, status) values(@ownerId, @status)").then((result) => {
                     callback(null, cart);
                 }).catch((err) => {
                     callback(err, null);
-                });
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
-
+                }).then(() => {})
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-Carts.getCartByCartId = async(cartId, status, callback) => {
+Carts.getCartByCartId = (cartId, status, callback) => {
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("cartId", sql.Int, cartId)
                 .input("status", sql.Bit, status)
                 .query("SELECT * FROM Carts WHERE cartId = @cartId AND status = @status").then(result => {
@@ -49,21 +42,19 @@ Carts.getCartByCartId = async(cartId, status, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-Carts.getCartDetailsByCartId = async(cartId, status, callback) => {
+Carts.getCartDetailsByCartId = (cartId, status, callback) => {
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("cartId", sql.Int, cartId)
                 .input("status", sql.Bit, status)
                 .query("SELECT * FROM CartDetails WHERE cartId = @cartId AND status = @status ").then(result => {
@@ -71,21 +62,18 @@ Carts.getCartDetailsByCartId = async(cartId, status, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-Carts.getCartByUserIdAndStatus = async(userId, status, callback) => {
+Carts.getCartByUserIdAndStatus = (userId, status, callback) => {
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("ownerId", sql.VarChar, userId)
                 .input("status", sql.Bit, status)
                 .query("SELECT * FROM Carts WHERE ownerId = @ownerId and status = @status").then(result => {
@@ -95,22 +83,18 @@ Carts.getCartByUserIdAndStatus = async(userId, status, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-Carts.addUserIdInCartExisted = async(cartId, userId, fullName, callback) => {
+Carts.addUserIdInCartExisted = (cartId, userId, fullName, callback) => {
     var defaultStatus = 1;
-
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("cartId", sql.Int, cartId)
                 .input("userId", sql.VarChar, userId)
                 .input("fullName", sql.NVarChar, fullName)
@@ -120,21 +104,19 @@ Carts.addUserIdInCartExisted = async(cartId, userId, fullName, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-Carts.getCartDetailByCartIdAndUserIdAndStatus = async(cartId, userId, status, callback) => {
+Carts.getCartDetailByCartIdAndUserIdAndStatus = (cartId, userId, status, callback) => {
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("cartId", sql.Int, cartId)
                 .input("userId", sql.VarChar, userId)
                 .input("status", sql.Bit, status)
@@ -143,22 +125,20 @@ Carts.getCartDetailByCartIdAndUserIdAndStatus = async(cartId, userId, status, ca
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-Carts.deleteCart = async(cartId, callback) => {
+Carts.deleteCart = (cartId, callback) => {
     var defaultStatus = false;
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("status", sql.Bit, defaultStatus)
                 .input("cartId", sql.Int, cartId)
                 .query("UPDATE Carts SET status = @status WHERE cartId = @cartId").then(result => {
@@ -166,22 +146,20 @@ Carts.deleteCart = async(cartId, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-Carts.removeUserExistInCart = async(cartDetailId, callback) => {
+Carts.removeUserExistInCart = (cartDetailId, callback) => {
     var defaultStatus = false;
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("status", sql.Bit, defaultStatus)
                 .input("cartDetailId", sql.Int, cartDetailId)
                 .query("UPDATE CartDetails SET status = @status WHERE cartDetailId = @cartDetailId").then(result => {
@@ -189,23 +167,21 @@ Carts.removeUserExistInCart = async(cartDetailId, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-Carts.deleteAllCartDetailByCartId = async(cartId, callback) => {
+Carts.deleteAllCartDetailByCartId = (cartId, callback) => {
     var defaultStatus = true;
     var changeStatus = false
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("cartId", sql.Int, cartId)
                 .input("status", sql.Bit, defaultStatus)
                 .input("changeStatus", sql.Bit, changeStatus)
@@ -215,10 +191,10 @@ Carts.deleteAllCartDetailByCartId = async(cartId, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 

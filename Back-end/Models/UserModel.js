@@ -1,8 +1,7 @@
-const connection = require('../Models/db.js');
-const sql = require('mssql');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const config = require('../Configs/mssqlConfigs');
+const sql = require('mssql');
 
 var Users = function(user) {
     this.userId = user.userId;
@@ -19,14 +18,10 @@ var Users = function(user) {
 Users.registerAccount = (account, callback) => {
     let userId = moment().valueOf().toString();
     let status = 1;
-    bcrypt.hash(account.password, 10, async(err, hash) => {
-        await connection.getConnection(async(error, result) => {
-            if (error) {
-                callback("Connection to mssql server failed!", null);
-            }
-            if (result) {
-                console.log(account);
-                await result.request()
+    bcrypt.hash(account.password, 10, (err, hash) => {
+        try {
+            sql.connect(config).then((connection) => {
+                connection.request()
                     .input("userId", sql.VarChar, userId)
                     .input("userName", sql.VarChar, account.userName)
                     .input("fullName", sql.NVarChar, account.fullName)
@@ -40,10 +35,10 @@ Users.registerAccount = (account, callback) => {
                     }).catch(err => {
                         callback(err, null);
                     })
-            }
-        }).finally(() => {
-            connection.closeConnection();
-        })
+            })
+        } catch (error) {
+            console.log(error);
+        }
     });
 }
 
@@ -54,7 +49,7 @@ Users.loginAccount = (account, callback) => {
                 callback(err, null);
             } else {
                 if (user) {
-                    bcrypt.compare(account.password, user[0].password, function async(err, res) {
+                    bcrypt.compare(account.password, user[0].password, function(err, res) {
                         if (res) {
                             callback(null, user);
                         } else {
@@ -72,15 +67,12 @@ Users.loginAccount = (account, callback) => {
     }
 }
 
-Users.editProfile = async(userId, account, callback) => {
+Users.editProfile = (userId, account, callback) => {
     if (account.fullName) {
         if (userId === account.userId) {
-            await connection.getConnection(async(error, result) => {
-                if (error) {
-                    callback("Connection to mssql server failed!", null);
-                }
-                if (result) {
-                    await result.request()
+            try {
+                sql.connect(config).then((connection) => {
+                    connection.request()
                         .input("fullName", sql.NVarChar, account.fullName)
                         .input("avatar", sql.VarChar, account.avatar)
                         .input("userId", sql.VarChar, account.userId)
@@ -89,10 +81,10 @@ Users.editProfile = async(userId, account, callback) => {
                         }).catch(error => {
                             callback(error, null);
                         })
-                }
-            }).finally(() => {
-                connection.closeConnection();
-            })
+                })
+            } catch (error) {
+                console.log(error);
+            }
         } else {
             callback("Bad request!", null);
         }
@@ -101,18 +93,15 @@ Users.editProfile = async(userId, account, callback) => {
     }
 }
 
-Users.searchByName = async(userId, search, callback) => {
+Users.searchByName = (userId, search, callback) => {
     if (!search) {
         search = "%%";
     } else {
         search += "%";
     }
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("searchName", sql.NVarChar, search)
                 .input("userId", sql.VarChar, userId)
                 .query("SELECT * FROM Users WHERE fullName like @searchName and userId != @userId").then((result) => {
@@ -120,10 +109,10 @@ Users.searchByName = async(userId, search, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 Users.changePassword = (account, callback) => {
@@ -134,15 +123,12 @@ Users.changePassword = (account, callback) => {
                     callback(err, null);
                 } else {
                     if (user) {
-                        bcrypt.compare(account.oldPassword, user[0].password, function async(err, res) {
+                        bcrypt.compare(account.oldPassword, user[0].password, function(err, res) {
                             if (res) {
-                                bcrypt.hash(account.newPassword, 10, async(err, hash) => {
-                                    await connection.getConnection(async(error, result) => {
-                                        if (error) {
-                                            callback("Connection to mssql server failed!", null);
-                                        }
-                                        if (result) {
-                                            await result.request()
+                                bcrypt.hash(account.newPassword, 10, (err, hash) => {
+                                    try {
+                                        sql.connect(config).then((connection) => {
+                                            connection.request()
                                                 .input("password", sql.VarChar, hash)
                                                 .input("userId", sql.VarChar, user[0].userId)
                                                 .query("Update Users SET password = @password WHERE userId = @userId").then((result) => {
@@ -150,10 +136,10 @@ Users.changePassword = (account, callback) => {
                                                 }).catch(error => {
                                                     callback(error, null);
                                                 })
-                                        }
-                                    }).finally(() => {
-                                        connection.closeConnection();
-                                    })
+                                        })
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
                                 })
                             } else {
                                 callback("OldPassword incorrect!", null);
@@ -172,14 +158,11 @@ Users.changePassword = (account, callback) => {
     }
 }
 
-async function getUserByUserName(userName, callback) {
+function getUserByUserName(userName, callback) {
     if (userName) {
-        await connection.getConnection(async(error, result) => {
-            if (error) {
-                callback("Connection to mssql server failed!", null);
-            }
-            if (result) {
-                await result.request()
+        try {
+            sql.connect(config).then((connection) => {
+                connection.request()
                     .input("userName", sql.VarChar, userName)
                     .query("Select * from Users where userName = @userName").then(result => {
                         var user = result.recordset;
@@ -192,10 +175,10 @@ async function getUserByUserName(userName, callback) {
                         console.log(error);
                         callback("Can not found user by username!", null);
                     })
-            }
-        }).finally(() => {
-            connection.closeConnection();
-        })
+            })
+        } catch (error) {
+            console.log(error);
+        }
     } else {
         callback("Bad request!", null);
     }

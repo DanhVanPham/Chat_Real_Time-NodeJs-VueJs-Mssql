@@ -1,5 +1,5 @@
-const mssql = require('mssql');
-const connection = require('./db.js');
+const config = require('../Configs/mssqlConfigs');
+const sql = require('mssql');
 const moment = require('moment');
 
 var Messages = function(message) {
@@ -13,42 +13,38 @@ var Messages = function(message) {
     this.status = message.status;
 }
 
-Messages.create_new_message = async(message, roomDetail, callback) => {
+Messages.create_new_message = (message, roomDetail, callback) => {
     var defaultStatus = 1;
     message.messageId = moment().valueOf().toString();
     message.status = defaultStatus;
     message.roomDetailId = roomDetail.roomDetailId;
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("messageId", sql.VarChar, message.messageId)
                 .input("roomDetailId", sql.Int, message.roomDetailId)
                 .input("content", sql.NVarChar, message.content)
                 .input("sender", sql.VarChar, message.sender)
                 .input("createdAt", sql.DateTime, message.createdAt)
                 .input("status", sql.Int, message.status)
-                .query("INSERT INTO Messages(messageId, roomDetailId, content, sender, createdAt, status) VALUES(@messageId, " +
-                    " @roomDetailId, @content , @sender, @createdAt, @status)").then(result => {
+                .query("INSERT INTO Messages(messageId, roomDetailId, content, sender, createdAt, status) VALUES( @messageId , @roomDetailId , @content , @sender , @createdAt , @status )")
+                .then(result => {
+                    console.log(result);
                     callback(null, result);
                 }).catch(error => {
+                    console.log(error);
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-Messages.get_list_messages_by_room_detail = async(roomDetailId, callback) => {
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+Messages.get_list_messages_by_room_detail = (roomDetailId, callback) => {
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("roomDetailId", sql.Int, roomDetailId)
                 .query("SELECT messageId, roomDetailId, content, sender, mes.createdAt, mes.status, users.fullName, users.avatar " +
                     "FROM Messages mes JOIN Users users on mes.sender = users.userId " +
@@ -58,10 +54,10 @@ Messages.get_list_messages_by_room_detail = async(roomDetailId, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 module.exports = Messages;

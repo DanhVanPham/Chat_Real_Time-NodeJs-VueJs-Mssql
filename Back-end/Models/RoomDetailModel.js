@@ -1,6 +1,5 @@
+const config = require('../Configs/mssqlConfigs');
 const sql = require('mssql');
-const connection = require('./db.js');
-const moment = require('moment');
 
 
 var RoomDetails = function(roomDetail) {
@@ -12,7 +11,7 @@ var RoomDetails = function(roomDetail) {
     this.status = roomDetail.status;
 }
 
-RoomDetails.create_new_room_details_two_users = async(body, room, callback) => {
+RoomDetails.create_new_room_details_two_users = (body, room, callback) => {
     if (!body.roomNameFrom) {
         body.roomNameFrom = '';
     }
@@ -26,12 +25,9 @@ RoomDetails.create_new_room_details_two_users = async(body, room, callback) => {
         body.roomAvatarTo = '';
     }
     var defaultStatus = 1;
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("roomNameTo", sql.NVarChar, body.roomNameTo)
                 .input("roomAvatarTo", sql.NVarChar, body.roomAvatarTo)
                 .input("roomId", sql.Int, room.roomId)
@@ -46,35 +42,32 @@ RoomDetails.create_new_room_details_two_users = async(body, room, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-RoomDetails.create_new_room_details_multi_users = async(listCart, body, room, callback) => {
+RoomDetails.create_new_room_details_multi_users = (listCart, body, room, callback) => {
     if (!body.roomAvatar) {
         body.roomAvatar = '';
     }
     if (body.roomName) {
         var defaultStatus = 1;
         var checkStatus = false;
-        await connection.getConnection(async(error, result) => {
-            if (error) {
-                callback("Connection to mssql server failed!", null);
-            }
-            if (result) {
+        try {
+            sql.connect(config).then((connection) => {
 
                 /* Using Transaction in query */
 
-                const transaction = new sql.Transaction(result);
-                transaction.begin(async(err) => {
+                const transaction = new sql.Transaction(connection);
+                transaction.begin((err) => {
                     if (err) {
                         callback(err, null);
                     }
                     for (let i = 0; i < listCart.length; i++) {
-                        await result.request()
+                        connection.request()
                             .input("roomName", sql.NVarChar, body.roomName)
                             .input("roomAvatar", sql.NVarChar, body.roomAvatar)
                             .input("roomId", sql.Int, room.roomId)
@@ -83,41 +76,32 @@ RoomDetails.create_new_room_details_multi_users = async(listCart, body, room, ca
                             .query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values(@roomName, " +
                                 " @roomAvatar, @roomId , @userId , @status)").then(result => {
                                 checkStatus = true;
-                            }).catch(async(error) => {
-                                await transaction.rollback(() => {
+                            }).catch((error) => {
+                                transaction.rollback(() => {
                                     callback(error, null);
                                 });
                                 checkStatus = false;
                             })
                     }
-                    await transaction.commit(() => {
+                    transaction.commit(() => {
                         callback(null, "Create new room details with multi users successfully!");
                     })
                 })
-            }
-        }).finally(() => {
-            if (checkStatus) {
-                callback(null, "Create new room details with multi users successfully!");
-            } else {
-                callback("Create new room details with multi users failed!", null);
-            }
-            connection.closeConnection();
-        })
+            })
+        } catch (error) {
+            console.log(error);
+        }
     } else {
         callback("Require input room name!", null);
     }
 
 }
 
-RoomDetails.getRoomDetailsByUserId = async(userId, callback) => {
+RoomDetails.getRoomDetailsByUserId = (userId, callback) => {
     var defaultStatus = 1;
-
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("userId", sql.VarChar, userId)
                 .input("status", sql.Int, defaultStatus)
                 .query("SELECT roomDetails.*, room.sender, room.content, room.fullName FROM (SELECT roomDetailId, roomName, roomAvatar, roomId FROM RoomDetails WHERE userId = @userId) roomDetails " +
@@ -135,23 +119,20 @@ RoomDetails.getRoomDetailsByUserId = async(userId, callback) => {
                     callback(null, result.recordsets[0]);
                 }).catch(error => {
                     callback(error, null);
-                });
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+                })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-RoomDetails.getRoomDetailsByRoomDetailId = async(roomDetailId, callback) => {
+RoomDetails.getRoomDetailsByRoomDetailId = (roomDetailId, callback) => {
     var defaultStatus = 1;
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("roomDetailId", sql.Int, roomDetailId)
                 .input("status", sql.Int, defaultStatus)
                 .query("SELECT * FROM RoomDetails WHERE roomId in (select roomId from RoomDetails where roomDetailId = @roomDetailId and status = @status) and status = @status ").then(result => {
@@ -159,22 +140,18 @@ RoomDetails.getRoomDetailsByRoomDetailId = async(roomDetailId, callback) => {
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-RoomDetails.getRoomDetailByUserIdAndRoomId = async(sender, roomId, callback) => {
+RoomDetails.getRoomDetailByUserIdAndRoomId = (sender, roomId, callback) => {
     var defaultStatus = 1;
-
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("userId", sql.VarChar, sender)
                 .input("roomId", sql.Int, roomId)
                 .input("status", sql.Int, defaultStatus)
@@ -182,24 +159,21 @@ RoomDetails.getRoomDetailByUserIdAndRoomId = async(sender, roomId, callback) => 
                     callback(null, result.recordsets[0]);
                 }).catch(error => {
                     callback(error, null);
-                });
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+                })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-RoomDetails.getRoomDetailsBetweenUsers = async(userFromId, userToId, callback) => {
+RoomDetails.getRoomDetailsBetweenUsers = (userFromId, userToId, callback) => {
     var defaultStatus = 1;
     var defaultCount = 2;
 
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            await result.request()
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("userFromId", sql.VarChar, userFromId)
                 .input("userToId", sql.VarChar, userToId)
                 .input("status", sql.Int, defaultStatus)
@@ -214,23 +188,19 @@ RoomDetails.getRoomDetailsBetweenUsers = async(userFromId, userToId, callback) =
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
-RoomDetails.checkExistGroupBetweenTwoUsers = async(userFromId, userToId, callback) => {
-
-    await connection.getConnection(async(error, result) => {
-        if (error) {
-            callback("Connection to mssql server failed!", null);
-        }
-        if (result) {
-            let defaultStatus = 1;
-            let defaultCount = 2;
-            await result.request()
+RoomDetails.checkExistGroupBetweenTwoUsers = (userFromId, userToId, callback) => {
+    let defaultStatus = 1;
+    let defaultCount = 2;
+    try {
+        sql.connect(config).then((connection) => {
+            connection.request()
                 .input("userFromId", sql.VarChar, userFromId)
                 .input("userToId", sql.VarChar, userToId)
                 .input("status", sql.Int, defaultStatus)
@@ -245,10 +215,10 @@ RoomDetails.checkExistGroupBetweenTwoUsers = async(userFromId, userToId, callbac
                 }).catch(error => {
                     callback(error, null);
                 })
-        }
-    }).finally(() => {
-        connection.closeConnection();
-    })
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 

@@ -3,12 +3,12 @@ const config = require('../Configs/mssqlConfigs');
 
 let connection = null;
 
-exports.getConnection = async(callback) => {
+exports.getConnection = (callback) => {
     try {
-        connection = await mssql.connect(config);
-        return callback(null, connection);
+        connection = mssql.connect(config);
+        callback(null, connection);
     } catch (error) {
-        return callback(error, null);
+        callback(error, null);
     }
 }
 
