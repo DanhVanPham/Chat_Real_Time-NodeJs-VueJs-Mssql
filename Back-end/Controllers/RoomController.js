@@ -4,8 +4,6 @@ const CartModel = require('../Models/CartModel.js');
 
 exports.create_new_rooms = (req, res) => {
     var room = new RoomModel(req.body);
-    console.log(req.body);
-    console.log(room);
     if (req.body.cartId) {
         CartModel.getCartByCartId(req.body.cartId, 1, (err, resul) => {
             if (err) {

@@ -294,7 +294,7 @@ export default {
       }
     },
     async createGroup() {
-      this.roomName = prompt("What is you group name?", "New Group");
+      this.roomName = prompt("What is your group name?", "New Group");
       if (!this.roomName) {
         this.roomName = "New Group";
       }
@@ -362,11 +362,12 @@ export default {
 
 /* List user left */
 
-.current-user {
+.list-user-container .current-user {
   max-width: 25vw;
   padding: 20px 20px;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 /* Header column user left */
@@ -562,6 +563,10 @@ export default {
   margin-bottom: 14px;
   cursor: pointer;
 }
+.user-container .current-user-image {
+  width: 38px;
+  box-sizing: border-box;
+}
 .user-container .current-user-image img {
   border-radius: 50%;
   width: 38px;
@@ -569,11 +574,16 @@ export default {
 }
 .user-container .display-name-user {
   margin-left: 12px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .user-container .display-name-user .name-user {
   font-weight: 600;
   font-size: 15px;
-  width: 200px;
+  width: 100px;
   margin: auto;
   white-space: nowrap;
   overflow: hidden;
@@ -582,17 +592,18 @@ export default {
 
 .message-user {
   font-size: 12.5px;
-  width: 180px;
-  margin-left: 0;
+  width: 100px;
+  margin: auto;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .current-user-status {
-  width: 30%;
   display: flex;
-  margin-right: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-right: 3rem;
 }
 
 /* List User right */
@@ -624,12 +635,44 @@ export default {
   text-align: center;
   margin-top: 30px;
 }
+@media screen and (max-width: 950px) {
+  .current-user .header-form-user {
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    max-height: 18vh;
+  }
+  .header-form-user .image-my-self {
+    text-align: center;
+  }
+  .user-container .display-name-user .name-user {
+    font-weight: 600;
+    font-size: 14px;
+    width: 80px;
+    margin: auto;
+  }
+  .logout {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 2rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
 
+  .add__multi {
+    cursor: pointer;
+    line-height: 2rem;
+  }
+  .form-list-users {
+    max-height: 65vh;
+  }
+}
 @media screen and (max-width: 914px) {
   .display-name-my-self .status-my-self {
     display: none;
   }
-  .name-my-self {
+  /* .name-my-self {
     font-size: 8px;
     padding-top: 10px;
     width: 50px;
@@ -637,14 +680,15 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+  } */
 }
+
 @media screen and (max-width: 815px) {
   .user-container .display-name-user .name-user {
     font-weight: 600;
     font-size: 14px;
-    width: 100px;
-    margin-top: 4px;
+    width: 80px;
+    margin: auto;
   }
   .logout {
     display: flex;
@@ -671,10 +715,11 @@ export default {
     padding: 0;
     display: flex;
     flex-direction: row;
+    flex-grow: 1;
   }
   .list-user-container .current-user {
     width: 26vw;
-    padding: 20px 20px;
+    padding: 10px 4px 10px 10px;
   }
   .current-user .header-form-user {
     flex-direction: column;
@@ -686,8 +731,29 @@ export default {
     text-align: center;
   }
 
-  .name-my-self {
-    font-size: 8px;
+  .user-container .current-user-image {
+    width: 20%;
+  }
+  .user-container .current-user-image img {
+    width: 28px;
+    height: 28px;
+  }
+  .user-container .display-name-user {
+    margin-left: 10px;
+    width: 50%;
+  }
+  .user-container .display-name-user .name-user {
+    font-size: 12px;
+    width: 68px;
+    font-weight: 600;
+  }
+
+  .message-user {
+    width: 100px;
+  }
+
+  .display-name-my-self .name-my-self {
+    font-size: 13px;
     padding-top: 10px;
     width: 100%;
     margin: auto;
@@ -696,19 +762,22 @@ export default {
     border-left: 1px solid rgb(211, 210, 208);
     width: 74vw;
   }
-  .user-container .display-name-user .name-user {
-    font-size: 13px;
-    width: 70px;
-    margin-top: 2px;
+
+  .add__multi {
+    line-height: 1.5rem;
+    margin: 4px auto;
   }
-  .list-users {
-    height: 60vh;
+
+  .back__room__detail .icon__back {
+    left: 4%;
+    transform: translate(-4%, -50%);
+  }
+
+  .back__room__detail .input-field {
+    flex-grow: 1;
   }
 }
 @media screen and (max-width: 644px) {
-  .current-user {
-    padding: 10px 10px;
-  }
   .user-container .display-name-user .name-user {
     width: 40px;
   }
@@ -753,6 +822,9 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .button-logout {
+    display: none;
   }
 }
 
@@ -810,6 +882,10 @@ export default {
 
   .content .welcome {
     margin-top: 40px;
+  }
+  .user-container .current-user-image img {
+    width: 42px;
+    height: 42px;
   }
 }
 </style>

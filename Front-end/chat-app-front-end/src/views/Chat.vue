@@ -273,12 +273,29 @@ export default {
   .input-field .input {
     margin: 10px 8px 0 8px;
   }
+  .chat-box-header .avatar {
+    width: 50px;
+    height: 50px;
+  }
+  .chat-box-header h6 {
+    font-size: 20px;
+  }
+  .input-field {
+    width: 97%;
+  }
 }
 
 @media screen and (max-width: 550px) {
   .input-field .input {
     height: 32px;
     border-radius: 14px;
+  }
+  .chat-box-header .avatar {
+    width: 40px;
+    height: 40px;
+  }
+  .chat-box-header h6 {
+    font-size: 16px;
   }
 
   .input-field .input ::placeholder {
@@ -304,32 +321,13 @@ export default {
     font-size: 0.6rem;
     margin-left: 10px;
   }
-  .chat-box-header h6 {
-    font-size: 1rem;
+  .input-field {
+    width: 95%;
   }
 }
 @media screen and (max-width: 350px) {
   .input-field {
-    width: 95%;
+    width: 90%;
   }
-  .chat-box-header .avatar {
-    width: 40px;
-    height: 40px;
-  }
-  .chat-box-header h6 {
-    font-size: 0.8rem;
-  }
-
-  /* .input-field .input {
-    width: 98%;
-    height: 36px;
-    border: none;
-    border-radius: 18px;
-    box-shadow: 0px 8px 15px rgba(2, 61, 255, 0.1);
-    outline: none;
-    padding-left: 10px;
-    transition: 0.5s ease-in-out;
-    margin: 10px 8px;
-  } */
 }
 </style>

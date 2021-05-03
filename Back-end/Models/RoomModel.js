@@ -24,7 +24,7 @@ Rooms.createNewRoom = (room, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 }
 
@@ -41,7 +41,7 @@ Rooms.getRoomByTimeCreatedAndStatus = (room, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 }
 

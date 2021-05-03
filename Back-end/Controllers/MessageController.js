@@ -4,7 +4,6 @@ const RoomDetailModel = require('../Models/RoomDetailModel.js');
 exports.createNewMessage = (req, res) => {
     if (req.body.content && req.body.sender && req.body.roomId) {
         var { sender, roomId } = req.body;
-        console.log(req.body);
         RoomDetailModel.getRoomDetailByUserIdAndRoomId(sender, roomId, (error, result) => {
             if (error) {
                 return res.status(400).send("Get RoomDetail failed!");
@@ -15,8 +14,6 @@ exports.createNewMessage = (req, res) => {
             } else {
                 var message = new MessageModel(req.body);
                 MessageModel.create_new_message(message, result[0], (error, result) => {
-                    console.log(error);
-                    console.log(result);
                     if (error) {
                         return res.status(400).send("Create new message failed!");
                     }

@@ -44,7 +44,7 @@ RoomDetails.create_new_room_details_two_users = (body, room, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -57,39 +57,31 @@ RoomDetails.create_new_room_details_multi_users = (listCart, body, room, callbac
         var defaultStatus = 1;
         var checkStatus = false;
         try {
-            sql.connect(config).then((connection) => {
-
-                /* Using Transaction in query */
-
-                const transaction = new sql.Transaction(connection);
-                transaction.begin((err) => {
-                    if (err) {
-                        callback(err, null);
-                    }
-                    for (let i = 0; i < listCart.length; i++) {
-                        connection.request()
-                            .input("roomName", sql.NVarChar, body.roomName)
-                            .input("roomAvatar", sql.NVarChar, body.roomAvatar)
-                            .input("roomId", sql.Int, room.roomId)
-                            .input("userId", sql.VarChar, listCart[i].userId)
-                            .input("status", sql.Int, defaultStatus)
-                            .query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values(@roomName, " +
-                                " @roomAvatar, @roomId , @userId , @status)").then(result => {
-                                checkStatus = true;
-                            }).catch((error) => {
-                                transaction.rollback(() => {
-                                    callback(error, null);
-                                });
-                                checkStatus = false;
-                            })
-                    }
-                    transaction.commit(() => {
-                        callback(null, "Create new room details with multi users successfully!");
-                    })
-                })
+            sql.connect(config).then(async(connection) => {
+                for (let i = 0; i < listCart.length; i++) {
+                    await connection.request()
+                        .input("roomName", sql.NVarChar, body.roomName)
+                        .input("roomAvatar", sql.NVarChar, body.roomAvatar)
+                        .input("roomId", sql.Int, room.roomId)
+                        .input("userId", sql.VarChar, listCart[i].userId)
+                        .input("status", sql.Int, defaultStatus)
+                        .query("Insert into RoomDetails(roomName, roomAvatar, roomId, userId, status) values(@roomName, " +
+                            " @roomAvatar, @roomId , @userId , @status)").then(result => {
+                            checkStatus = true;
+                        }).catch((error) => {
+                            callback(error, null);
+                            checkStatus = false;
+                        })
+                }
+            }).then(() => {
+                if (checkStatus) {
+                    callback(null, "Create new room details with multi users successfully!");
+                } else {
+                    callback("Create new room details with multi users failed!", null);
+                }
             })
         } catch (error) {
-            console.log(error);
+            callback("Create new room details with multi users failed!", null);
         }
     } else {
         callback("Require input room name!", null);
@@ -122,7 +114,7 @@ RoomDetails.getRoomDetailsByUserId = (userId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -142,7 +134,7 @@ RoomDetails.getRoomDetailsByRoomDetailId = (roomDetailId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -162,7 +154,7 @@ RoomDetails.getRoomDetailByUserIdAndRoomId = (sender, roomId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -190,7 +182,7 @@ RoomDetails.getRoomDetailsBetweenUsers = (userFromId, userToId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -217,7 +209,7 @@ RoomDetails.checkExistGroupBetweenTwoUsers = (userFromId, userToId, callback) =>
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }

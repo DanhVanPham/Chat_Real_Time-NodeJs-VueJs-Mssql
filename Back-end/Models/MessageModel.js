@@ -29,15 +29,13 @@ Messages.create_new_message = (message, roomDetail, callback) => {
                 .input("status", sql.Int, message.status)
                 .query("INSERT INTO Messages(messageId, roomDetailId, content, sender, createdAt, status) VALUES( @messageId , @roomDetailId , @content , @sender , @createdAt , @status )")
                 .then(result => {
-                    console.log(result);
                     callback(null, result);
                 }).catch(error => {
-                    console.log(error);
                     callback(error, null);
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 }
 
@@ -56,7 +54,7 @@ Messages.get_list_messages_by_room_detail = (roomDetailId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 }
 

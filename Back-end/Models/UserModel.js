@@ -37,7 +37,7 @@ Users.registerAccount = (account, callback) => {
                     })
             })
         } catch (error) {
-            console.log(error);
+            callback(error, null);
         }
     });
 }
@@ -83,7 +83,7 @@ Users.editProfile = (userId, account, callback) => {
                         })
                 })
             } catch (error) {
-                console.log(error);
+                callback(error, null);
             }
         } else {
             callback("Bad request!", null);
@@ -111,7 +111,7 @@ Users.searchByName = (userId, search, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 }
 
@@ -138,7 +138,7 @@ Users.changePassword = (account, callback) => {
                                                 })
                                         })
                                     } catch (error) {
-                                        console.log(error);
+                                        callback(error, null);
                                     }
                                 })
                             } else {
@@ -172,12 +172,11 @@ function getUserByUserName(userName, callback) {
                             callback("Can not found user by username!", null);
                         }
                     }).catch(error => {
-                        console.log(error);
                         callback("Can not found user by username!", null);
                     })
             })
         } catch (error) {
-            console.log(error);
+            callback(error, null);
         }
     } else {
         callback("Bad request!", null);

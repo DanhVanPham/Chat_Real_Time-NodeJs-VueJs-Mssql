@@ -77,8 +77,6 @@ Carts.getCartByUserIdAndStatus = (userId, status, callback) => {
                 .input("ownerId", sql.VarChar, userId)
                 .input("status", sql.Bit, status)
                 .query("SELECT * FROM Carts WHERE ownerId = @ownerId and status = @status").then(result => {
-                    console.log(2);
-                    console.log(result);
                     callback(null, result.recordset[0]);
                 }).catch(error => {
                     callback(error, null);
@@ -134,8 +132,6 @@ Carts.getCartDetailByCartIdAndUserIdAndStatus = (cartId, userId, status, callbac
 
 Carts.deleteCart = (cartId, callback) => {
     var defaultStatus = false;
-
-
     try {
         sql.connect(config).then((connection) => {
             connection.request()
@@ -177,8 +173,6 @@ Carts.removeUserExistInCart = (cartDetailId, callback) => {
 Carts.deleteAllCartDetailByCartId = (cartId, callback) => {
     var defaultStatus = true;
     var changeStatus = false
-
-
     try {
         sql.connect(config).then((connection) => {
             connection.request()
@@ -186,7 +180,7 @@ Carts.deleteAllCartDetailByCartId = (cartId, callback) => {
                 .input("status", sql.Bit, defaultStatus)
                 .input("changeStatus", sql.Bit, changeStatus)
                 .query("UPDATE CartDetails SET status = @changeStatus" +
-                    "' WHERE cartDetailId IN (SELECT cartDetailId FROM CartDetails WHERE cartId = @cartId and status = @status)").then(result => {
+                    " WHERE cartDetailId IN (SELECT cartDetailId FROM CartDetails WHERE cartId = @cartId and status = @status)").then(result => {
                     callback(null, result);
                 }).catch(error => {
                     callback(error, null);
