@@ -82,6 +82,9 @@ const actions = {
             }
         } catch (error) {
             await commit(SET_USERS, "");
+            if (error.response.status === 403) {
+                return 403;
+            }
             return 400;
         }
     }

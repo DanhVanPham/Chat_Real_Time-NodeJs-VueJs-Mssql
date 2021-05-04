@@ -183,19 +183,29 @@ export default {
     async signOut() {
       let resp = await this.logout();
       if (resp === 200) {
-        this.setCurrentRoomDetail("");
-        this.setMessages("");
-        this.setCartDetails("");
-        this.setRoomDetails("");
+        this.setEmpty();
         Vue.toasted.show("Logout successfull.").goAway(1500);
         this.$router.push("/login");
       } else {
         Vue.toasted.show("Logout failed!").goAway(1500);
       }
     },
+    setEmpty() {
+      this.setUser("");
+      this.setCurrentRoomDetail("");
+      this.setMessages("");
+      this.setCartDetails("");
+      this.setRoomDetails("");
+    },
     async getUserList() {
       if (this.user.userId) {
-        await this.getRoomByUser(this.user.userId);
+        let response = await this.getRoomByUser(this.user.userId);
+        if (response === 403) {
+          this.setEmpty();
+          Vue.toasted.show("Access denied!").goAway(1500);
+          Vue.toasted.show("You need to login.").goAway(1500);
+          this.$router.push("/login");
+        }
       }
     },
     async searchUser(event) {
@@ -204,7 +214,13 @@ export default {
         userId: this.user.userId,
         searchName: this.searchName,
       };
-      await this.searchUsers(credentials);
+      let response = await this.searchUsers(credentials);
+      if (response === 403) {
+        this.setEmpty();
+        Vue.toasted.show("Access denied!").goAway(1500);
+        Vue.toasted.show("You need to login.").goAway(1500);
+        this.$router.push("/login");
+      }
     },
     changeIcon() {
       if (this.search) {
@@ -224,6 +240,11 @@ export default {
         if (response === 200) {
           this.letChat(this.currentRoomDetail);
           this.$socket.emit("createRoom", this.currentRoomDetail);
+        } else if (response === 403) {
+          this.setEmpty();
+          Vue.toasted.show("Access denied!").goAway(1500);
+          Vue.toasted.show("You need to login.").goAway(1500);
+          this.$router.push("/login");
         } else {
           let newRoomDetail = {
             roomNameFrom: this.user.fullName,
@@ -237,6 +258,11 @@ export default {
           if (response === 200) {
             Vue.toasted.show("Create new room successfully").goAway(1500);
             this.letChat(this.currentRoomDetail);
+          } else if (response === 403) {
+            this.setEmpty();
+            Vue.toasted.show("Access denied!").goAway(1500);
+            Vue.toasted.show("You need to login.").goAway(1500);
+            this.$router.push("/login");
           }
         }
       } else {
@@ -247,12 +273,15 @@ export default {
       if (!this.statusAddMultiUser) {
         this.statusAddMultiUser = true;
         let response = await this.getCartByUserId(this.user.userId);
-        if (response !== 200) {
-          console.log(1);
-          this.createCartByUser();
-        } else {
-          console.log(2);
+        if (response === 403) {
+          this.setEmpty();
+          Vue.toasted.show("Access denied!").goAway(1500);
+          Vue.toasted.show("You need to login.").goAway(1500);
+          this.$router.push("/login");
+        } else if (response === 200) {
           this.getAllCartDetails();
+        } else {
+          this.createCartByUser();
         }
       } else {
         this.statusAddMultiUser = false;
@@ -267,12 +296,18 @@ export default {
           fullName: userTo.fullName,
         };
         let response = await this.addUserInCart(credentials);
-        if (response !== 200) {
+
+        if (response === 403) {
+          this.setEmpty();
+          Vue.toasted.show("Access denied!").goAway(1500);
+          Vue.toasted.show("You need to login.").goAway(1500);
+          this.$router.push("/login");
+        } else if (response === 200) {
+          Vue.toasted.show("Add user to cart successfully").goAway(1500);
+        } else {
           Vue.toasted
             .show("Check user have been existed in cart!")
             .goAway(1500);
-        } else {
-          Vue.toasted.show("Add user to cart successfully").goAway(1500);
         }
       }
     },
@@ -285,6 +320,11 @@ export default {
       if (response === 200) {
         Vue.toasted.show("Create new cart successfully").goAway(1500);
         this.getAllCartDetails();
+      } else if (response === 403) {
+        this.setEmpty();
+        Vue.toasted.show("Access denied!").goAway(1500);
+        Vue.toasted.show("You need to login.").goAway(1500);
+        this.$router.push("/login");
       }
     },
     async getAllCartDetails() {
@@ -292,6 +332,11 @@ export default {
         let response = await this.getCartDetails(this.cart.cartId);
         if (response === 200) {
           Vue.toasted.show("Get successful").goAway(1500);
+        } else if (response === 403) {
+          this.setEmpty();
+          Vue.toasted.show("Access denied!").goAway(1500);
+          Vue.toasted.show("You need to login.").goAway(1500);
+          this.$router.push("/login");
         }
       }
     },
@@ -313,6 +358,11 @@ export default {
         this.statusAddMultiUser = false;
         this.searchName = "";
         this.search = false;
+      } else if (response === 403) {
+        this.setEmpty();
+        Vue.toasted.show("Access denied!").goAway(1500);
+        Vue.toasted.show("You need to login.").goAway(1500);
+        this.$router.push("/login");
       } else {
         Vue.toasted.show("Create new group failed!").goAway(1500);
       }
@@ -334,6 +384,7 @@ export default {
     ...mapMutations("room", ["setCurrentRoomDetail", "setRoomDetails"]),
     ...mapMutations("message", ["setMessages"]),
     ...mapMutations("cart", ["setCartDetails"]),
+    ...mapMutations("user", ["setUser"]),
   },
   created() {
     if (localStorage.getItem("userId") === null) {

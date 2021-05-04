@@ -30,8 +30,6 @@ Users.registerAccount = (account, callback) => {
                     ]
                 ],
                 function(error, results) {
-                    console.log(error);
-                    console.log(results);
                     if (error) { callback(err, null); } else { callback(null, results); }
                 });
 
@@ -48,7 +46,6 @@ Users.loginAccount = (account, callback) => {
             if (err) {
                 callback(err, null);
             } else {
-                console.log(user);
                 if (user) {
                     bcrypt.compare(account.password, user[0].password, function(err, res) {
                         if (res) {
@@ -100,7 +97,7 @@ Users.searchByName = (userId, search, callback) => {
     try {
         // connection.connect();
 
-        connection.query("SELECT * FROM Users WHERE fullName like ? and userId != ?", [search, userId],
+        connection.query("SELECT userId, fullName, avatar, status FROM Users WHERE fullName like ? and userId != ?", [search, userId],
             function(error, results) {
                 if (error) { callback(error, null); } else {
                     callback(null, results);

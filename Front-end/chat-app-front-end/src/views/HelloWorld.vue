@@ -100,7 +100,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .hello_customer {
-  font-size: 4rem;
+  font-size: 2.4rem;
   font-weight: bold;
   padding: 2rem 1rem;
 }

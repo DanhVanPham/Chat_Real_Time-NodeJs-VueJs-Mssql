@@ -37,6 +37,7 @@
 <script>
 import MessageList from "../components/MessageList/MessageList.vue";
 import { mapActions, mapGetters, mapMutations } from "vuex";
+import Vue from "vue";
 export default {
   components: { MessageList },
   props: ["currentRoom", "userIdSelf"],
@@ -111,13 +112,31 @@ export default {
             roomId: this.currentRoom.roomId,
           });
           this.message = "";
+        } else if (response === 403) {
+          this.setEmpty();
+          Vue.toasted.show("Access denied!").goAway(1500);
+          Vue.toasted.show("You need to login.").goAway(1500);
+          this.$router.push("/login");
         }
       }
       this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });
     },
+    setEmpty() {
+      this.setUser("");
+      this.setCurrentRoomDetail("");
+      this.setMessages("");
+      this.setCartDetails("");
+      this.setRoomDetails("");
+    },
     ...mapActions("message", ["getListMessagesByRoomDetail", "createMessage"]),
-    ...mapMutations("message", ["addMessage"]),
-    ...mapMutations("room", ["setMessagesRoomDetails"]),
+    ...mapMutations("room", [
+      "setCurrentRoomDetail",
+      "setRoomDetails",
+      "setMessagesRoomDetails",
+    ]),
+    ...mapMutations("message", ["setMessages", "addMessage"]),
+    ...mapMutations("cart", ["setCartDetails"]),
+    ...mapMutations("user", ["setUser"]),
   },
   async created() {
     await this.getListMessagesByRoomDetail(this.currentRoom.roomDetailId);

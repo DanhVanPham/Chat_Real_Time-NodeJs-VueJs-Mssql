@@ -2,7 +2,6 @@ import {get, post, remove } from '../utils/apiCaller';
 
 class CartService {
     async getCartByOwnerId(ownerId) {
-        console.log(ownerId)
         return await get(`/carts/users/${ownerId}`, {}, {});
     }
 

@@ -22,14 +22,13 @@ Carts.createNewCart = (cart, callback) => {
                 ]
             ],
             function(error, results) {
-                console.log(error);
                 if (error) { callback(error, null); } else {
                     callback(null, cart);
                 }
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 }
 
@@ -45,7 +44,7 @@ Carts.getCartByCartId = (cartId, status, callback) => {
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -62,7 +61,7 @@ Carts.getCartDetailsByCartId = (cartId, status, callback) => {
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -79,7 +78,7 @@ Carts.getCartByUserIdAndStatus = (userId, status, callback) => {
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -94,15 +93,13 @@ Carts.addUserIdInCartExisted = (cartId, userId, fullName, callback) => {
                 ]
             ],
             function(error, results) {
-                console.log(error);
-                console.log(results);
                 if (error) { callback(error, null); } else {
                     callback(null, results);
                 }
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -113,15 +110,13 @@ Carts.getCartDetailByCartIdAndUserIdAndStatus = (cartId, userId, status, callbac
         // connection.connect();
         connection.query("SELECT * FROM CartDetails WHERE cartId = ? and userId = ? and status = ?", [cartId, userId, status],
             function(error, results) {
-                console.log(error);
-                console.log(results)
                 if (error) { callback(error, null); } else {
                     callback(null, results);
                 }
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -138,7 +133,7 @@ Carts.deleteCart = (cartId, callback) => {
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }

@@ -14,7 +14,7 @@ const io = socketio(server, { cors: { origin: '*' } });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors({ credentials: true, origin: 'http://localhost:8080' }));
+app.use(cors({ credentials: true, origin: ['http://localhost:8080', 'https://chat-app-realtime-nodejs-mysql.web.app'] }));
 app.use(cookieParser());
 
 routes(app);

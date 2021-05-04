@@ -35,8 +35,6 @@ RoomDetails.create_new_room_details_two_users = (body, room, callback) => {
                 ]
             ],
             function(error, results) {
-                console.log(error);
-                console.log(results);
                 if (error) { callback(error, null); } else { callback(null, results) }
             });
         // connection.end();
@@ -61,8 +59,6 @@ RoomDetails.create_new_room_details_multi_users = (listCart, body, room, callbac
             // connection.connect();
             connection.query("INSERT INTO RoomDetails(roomName, roomAvatar, roomId, userId, status) VALUES ? ", [array],
                 function(error, results) {
-                    console.log(error)
-                    console.log(results)
                     if (error) { callback("Create new room details with multi users failed!", null); } else { callback(null, "Create new room details with multi users successfully!") }
                 });
             // connection.end();

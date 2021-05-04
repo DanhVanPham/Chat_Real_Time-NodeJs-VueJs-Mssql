@@ -75,7 +75,6 @@ exports.create_new_rooms = (req, res) => {
                             return res.status(400).send(erro);
                         }
                         if (resul && resul.length !== 0) {
-                            console.log(resul[0]);
                             RoomDetailModel.create_new_room_details_two_users(req.body, resul[0], (err, re) => {
                                 if (err) {
                                     return res.status(400).send(err);
@@ -84,7 +83,6 @@ exports.create_new_rooms = (req, res) => {
                                     if (error) {
                                         return res.status(400).send(error);
                                     }
-                                    console.log(result);
                                     if (result && result.length !== 0) {
                                         return res.status(200).send(result[0]);
                                     }

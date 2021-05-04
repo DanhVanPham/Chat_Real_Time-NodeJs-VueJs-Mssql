@@ -26,7 +26,7 @@ Carts.createNewCart = (cart, callback) => {
                 }).then(() => {})
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 }
 
@@ -44,7 +44,7 @@ Carts.getCartByCartId = (cartId, status, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -64,7 +64,7 @@ Carts.getCartDetailsByCartId = (cartId, status, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -83,7 +83,7 @@ Carts.getCartByUserIdAndStatus = (userId, status, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -104,7 +104,7 @@ Carts.addUserIdInCartExisted = (cartId, userId, fullName, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -125,7 +125,7 @@ Carts.getCartDetailByCartIdAndUserIdAndStatus = (cartId, userId, status, callbac
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -144,7 +144,7 @@ Carts.deleteCart = (cartId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -165,7 +165,7 @@ Carts.removeUserExistInCart = (cartDetailId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -187,7 +187,7 @@ Carts.deleteAllCartDetailByCartId = (cartId, callback) => {
                 })
         })
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }

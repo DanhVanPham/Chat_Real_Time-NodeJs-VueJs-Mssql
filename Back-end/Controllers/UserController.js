@@ -1,6 +1,7 @@
 const UserModel = require('../mysql/Models/UserModel.js');
 const generateToken = require('../Tokens/GenerateTokens.js');
 
+
 exports.create_new_user = (req, res) => {
     var user = new UserModel(req.body);
     UserModel.registerAccount(user, function callback(error, result) {
@@ -17,7 +18,6 @@ exports.login_user_password = async(req, res) => {
         if (error) {
             return res.status(400).send(error);
         }
-        console.log(result);
         try {
             const user = result[0];
             const { userId, userName, fullName } = user;
@@ -37,33 +37,47 @@ exports.logout = async(req, res) => {
 }
 
 exports.edit_profile = (req, res) => {
-    var user = new UserModel(req.body);
-    UserModel.editProfile(req.params.id, user, function callback(error, result) {
-        if (error) {
-            return res.status(400).send(error);
-        }
-        return res.status(200).send(result);
-    })
+    if (req.params.id === req.user.tokenUserId) {
+        var user = new UserModel(req.body);
+        UserModel.editProfile(req.params.id, user, function callback(error, result) {
+            if (error) {
+                return res.status(400).send(error);
+            }
+            return res.status(200).send(result);
+        })
+    } else {
+        return res.status(403).send("Access denied!");
+    }
 }
 
 exports.change_password = (req, res) => {
-    UserModel.changePassword(req.body, function callback(error, result) {
-        if (error) {
-            return res.status(400).send(error);
-        }
-        return res.status(200).send(result);
-    })
+    if (req.body.userName == req.user.tokenUserName) {
+        UserModel.changePassword(req.body, function callback(error, result) {
+            if (error) {
+                return res.status(400).send(error);
+            }
+            return res.status(200).send(result);
+        })
+    } else {
+        return res.status(403).send("Access denied!");
+    }
+
 }
 
 exports.searchUserByName = (req, res) => {
-    UserModel.searchByName(req.params.userId, req.params.search, (error, result) => {
-        if (error) {
-            return res.status(400).send(error);
-        }
-        if (result && result.length !== 0) {
-            return res.status(200).send(result);
-        } else {
-            return res.status(404).send("Get user does not found!");
-        }
-    })
+    if (req.params.userId === req.user.tokenUserId) {
+        UserModel.searchByName(req.params.userId, req.params.search, (error, result) => {
+            if (error) {
+                return res.status(400).send(error);
+            }
+            if (result && result.length !== 0) {
+                return res.status(200).send(result);
+            } else {
+                return res.status(404).send("Get user does not found!");
+            }
+        })
+    } else {
+        return res.status(403).send("Access denied!");
+    }
+
 }

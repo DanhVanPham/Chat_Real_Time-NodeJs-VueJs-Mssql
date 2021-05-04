@@ -34,11 +34,8 @@ Rooms.createNewRoom = (room, callback) => {
 Rooms.getRoomByTimeCreatedAndStatus = (room, callback) => {
     try {
         // connection.connect();
-        console.log(room.createdAt)
         connection.query("SELECT * FROM Rooms WHERE createdAt = ? and status = ?", [new Date(room.createdAt), room.status],
             function(error, results) {
-                console.log(error);
-                console.log(results)
                 if (error) { callback(error, null); } else { callback(null, results) }
             });
         // connection.end();
