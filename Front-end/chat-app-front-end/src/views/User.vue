@@ -248,8 +248,10 @@ export default {
         this.statusAddMultiUser = true;
         let response = await this.getCartByUserId(this.user.userId);
         if (response !== 200) {
+          console.log(1);
           this.createCartByUser();
         } else {
+          console.log(2);
           this.getAllCartDetails();
         }
       } else {

@@ -1,4 +1,4 @@
-const UserModel = require('../models/UserModel.js');
+const UserModel = require('../mysql/Models/UserModel.js');
 const generateToken = require('../Tokens/GenerateTokens.js');
 
 exports.create_new_user = (req, res) => {
@@ -17,6 +17,7 @@ exports.login_user_password = async(req, res) => {
         if (error) {
             return res.status(400).send(error);
         }
+        console.log(result);
         try {
             const user = result[0];
             const { userId, userName, fullName } = user;

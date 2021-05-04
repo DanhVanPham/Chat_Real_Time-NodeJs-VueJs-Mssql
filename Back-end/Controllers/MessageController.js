@@ -1,5 +1,5 @@
-const MessageModel = require('../Models/MessageModel.js');
-const RoomDetailModel = require('../Models/RoomDetailModel.js');
+const MessageModel = require('../mysql/Models/MessageModel.js');
+const RoomDetailModel = require('../mysql/Models/RoomDetailModel.js');
 
 exports.createNewMessage = (req, res) => {
     if (req.body.content && req.body.sender && req.body.roomId) {

@@ -1,6 +1,6 @@
-const RoomModel = require('../Models/RoomModel.js');
-const RoomDetailModel = require('../Models/RoomDetailModel.js');
-const CartModel = require('../Models/CartModel.js');
+const RoomModel = require('../mysql/Models/RoomModel.js');
+const RoomDetailModel = require('../mysql/Models/RoomDetailModel.js');
+const CartModel = require('../mysql/Models/CartModel.js');
 
 exports.create_new_rooms = (req, res) => {
     var room = new RoomModel(req.body);
@@ -9,10 +9,10 @@ exports.create_new_rooms = (req, res) => {
             if (err) {
                 return res.status(400).send("Get cart by cartId and status failed!");
             }
-            if (!resul) {
+            if (!resul && resul.length === 0) {
                 return res.status(404).send("Get cart by cartId and status does not found!");
             } else {
-                CartModel.getCartDetailsByCartId(resul.cartId, 1, (error, result) => {
+                CartModel.getCartDetailsByCartId(resul[0].cartId, 1, (error, result) => {
                     if (error) {
                         return res.status(400).send("Get Cart Details failed!");
                     } else {
@@ -24,14 +24,14 @@ exports.create_new_rooms = (req, res) => {
                                 if (er) {
                                     return res.status(400).send(er);
                                 } else {
-                                    RoomModel.getRoomByTimeCreatedAndStatus(room, (error, resul) => {
+                                    RoomModel.getRoomByTimeCreatedAndStatus(rs, (error, resul) => {
                                         if (error) {
                                             return res.status(400).send(error);
                                         }
-                                        if (!resul) {
+                                        if (!resul || resul.length === 0) {
                                             return res.status(404).send("Get Room is not available!");
                                         }
-                                        RoomDetailModel.create_new_room_details_multi_users(listCart, req.body, resul, (error, resu) => {
+                                        RoomDetailModel.create_new_room_details_multi_users(listCart, req.body, resul[0], (error, resu) => {
                                             if (error) {
                                                 return res.status(400).send(error);
                                             }
@@ -44,7 +44,7 @@ exports.create_new_rooms = (req, res) => {
                                                         if (error) {
                                                             return res.status(400).send("Delete Cart Details failed!");
                                                         }
-                                                        RoomDetailModel.getRoomDetailByUserIdAndRoomId(listCart[0].userId, resul.roomId, (error, result) => {
+                                                        RoomDetailModel.getRoomDetailByUserIdAndRoomId(listCart[0].userId, resul[0].roomId, (error, result) => {
                                                             if (error) {
                                                                 return res.status(400).send(error);
                                                             }
@@ -74,19 +74,25 @@ exports.create_new_rooms = (req, res) => {
                         if (erro) {
                             return res.status(400).send(erro);
                         }
-                        RoomDetailModel.create_new_room_details_two_users(req.body, resul, (err, re) => {
-                            if (err) {
-                                return res.status(400).send(err);
-                            }
-                            RoomDetailModel.getRoomDetailByUserIdAndRoomId(req.body.userFromId, resul.roomId, (error, result) => {
-                                if (error) {
-                                    return res.status(400).send(error);
+                        if (resul && resul.length !== 0) {
+                            console.log(resul[0]);
+                            RoomDetailModel.create_new_room_details_two_users(req.body, resul[0], (err, re) => {
+                                if (err) {
+                                    return res.status(400).send(err);
                                 }
-                                if (result && result.length !== 0) {
-                                    return res.status(200).send(result[0]);
-                                }
+                                RoomDetailModel.getRoomDetailByUserIdAndRoomId(req.body.userFromId, resul[0].roomId, (error, result) => {
+                                    if (error) {
+                                        return res.status(400).send(error);
+                                    }
+                                    console.log(result);
+                                    if (result && result.length !== 0) {
+                                        return res.status(200).send(result[0]);
+                                    }
+                                })
                             })
-                        })
+                        } else {
+                            return res.status(404).send("Get room details failed!")
+                        }
                     })
                 }
             })
