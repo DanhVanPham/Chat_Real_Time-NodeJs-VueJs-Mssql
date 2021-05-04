@@ -153,6 +153,10 @@ export default {
     margin-bottom: 8px;
   }
 
+  .messages .message-wrapper .message.right .display {
+    margin-right: 10px;
+  }
+
   .display .display-name.left {
     font-size: 12px;
   }

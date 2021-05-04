@@ -3,9 +3,9 @@ const RoomDetailModel = require('../mysql/Models/RoomDetailModel.js');
 
 exports.createNewMessage = (req, res) => {
     if (req.body.content && req.body.sender && req.body.roomId) {
-        if (req.body.sender === req.user.tokenUserId) {
-            var { sender, roomId } = req.body;
-            RoomDetailModel.getRoomDetailByUserIdAndRoomId(sender, roomId, (error, result) => {
+        // if (req.body.sender === req.user.tokenUserId) {
+        var { sender, roomId } = req.body;
+        RoomDetailModel.getRoomDetailByUserIdAndRoomId(sender, roomId, (error, result) => {
                 if (error) {
                     return res.status(400).send("Get RoomDetail failed!");
                 }
@@ -25,9 +25,9 @@ exports.createNewMessage = (req, res) => {
                     })
                 }
             })
-        } else {
-            return res.status(403).send("Access denied!");
-        }
+            // } else {
+            //     return res.status(403).send("Access denied!")
+            // }
 
     } else {
         return res.status(400).send("Bad request!");

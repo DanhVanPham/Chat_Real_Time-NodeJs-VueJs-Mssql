@@ -14,13 +14,12 @@ const io = socketio(server, { cors: { origin: '*' } });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors({ credentials: true, origin: ['http://localhost:8080', 'https://chat-app-realtime-nodejs-mysql.web.app'] }));
+app.use(cors({ credentials: true, origin: ['http://localhost:8080', 'https://chat-app-realtime-nodejs-mysql.web.app', 'https://chat-app-realtime-nodejs-mysql.firebaseapp.com'] }));
 app.use(cookieParser());
 
 routes(app);
 
 io.on('connection', (socket) => {
-
     socket.on("latestMessageInCurrentRoomDetails", ({ content, sender, roomId, fullName }) => {
         io.emit("latestMessageInCurrentRoomDetails", { content, sender, roomId, fullName });
     })

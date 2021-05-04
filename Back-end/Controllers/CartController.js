@@ -1,8 +1,8 @@
 const CartModel = require('../mysql/Models/CartModel.js');
 
 exports.create_new_cart = (req, res) => {
-    if (req.body.ownerId === req.user.tokenUserId) {
-        CartModel.createNewCart(req.body, (error, result) => {
+    // if (req.body.ownerId === req.user.tokenUserId) {
+    CartModel.createNewCart(req.body, (error, result) => {
             if (error) {
                 return res.status(400).send("Create new Cart failed!");
             } else {
@@ -20,15 +20,15 @@ exports.create_new_cart = (req, res) => {
                 })
             }
         })
-    } else {
-        return res.status(403).send("Access denied!");
-    }
+        // } else {
+        //     return res.status(403).send("Access denied!");
+        // }
 
 }
 
 exports.get_cart_by_userId_and_status = (req, res) => {
-    if (req.params.userId === req.user.tokenUserId) {
-        CartModel.getCartByUserIdAndStatus(req.params.userId, 1, (err, resul) => {
+    // if (req.params.userId === req.user.tokenUserId) {
+    CartModel.getCartByUserIdAndStatus(req.params.userId, 1, (err, resul) => {
             if (err) {
                 return res.status(400).send("Get cart by userid and status failed!");
             }
@@ -37,16 +37,16 @@ exports.get_cart_by_userId_and_status = (req, res) => {
             }
             return res.status(200).send(resul[0]);
         })
-    } else {
-        return res.status(403).send("Access denied!");
-    }
+        // } else {
+        //     return res.status(403).send("Access denied!");
+        // }
 }
 
 exports.add_userId_in_cart_details = (req, res) => {
     if (req.params.cartId) {
         if (req.body.ownerId && req.body.userId && req.body.fullName) {
-            if (req.body.ownerId === req.user.tokenUserId) {
-                CartModel.getCartByUserIdAndStatus(req.body.ownerId, 1, (err, resul) => {
+            // if (req.body.ownerId === req.user.tokenUserId) {
+            CartModel.getCartByUserIdAndStatus(req.body.ownerId, 1, (err, resul) => {
                     if (err) {
                         return res.status(400).send("Get cart by userid and status failed!");
                     }
@@ -84,9 +84,9 @@ exports.add_userId_in_cart_details = (req, res) => {
                         }
                     }
                 })
-            } else {
-                return res.status(403).send("Access denied!");
-            }
+                // } else {
+                //     return res.status(403).send("Access denied!");
+                // }
         } else {
             return res.status(400).send("Bad request!");
         }
@@ -99,8 +99,8 @@ exports.add_userId_in_cart_details = (req, res) => {
 exports.remove_user_in_cart = (req, res) => {
     if (req.params.cartId) {
         if (req.body.ownerId && req.body.userId) {
-            if (req.body.ownerId === req.user.tokenUserId) {
-                CartModel.getCartByUserIdAndStatus(req.body.ownerId, 1, (err, resul) => {
+            // if (req.body.ownerId === req.user.tokenUserId) {
+            CartModel.getCartByUserIdAndStatus(req.body.ownerId, 1, (err, resul) => {
                     if (err) {
                         return res.status(400).send("Get cart by userid and status failed!");
                     }
@@ -129,9 +129,9 @@ exports.remove_user_in_cart = (req, res) => {
                         }
                     }
                 })
-            } else {
-                return res.status(403).send("Access denied!");
-            }
+                // } else {
+                //     return res.status(403).send("Access denied!");
+                // }
         } else {
             return res.status(400).send("Bad request!");
         }

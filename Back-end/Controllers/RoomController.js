@@ -3,6 +3,7 @@ const RoomDetailModel = require('../mysql/Models/RoomDetailModel.js');
 const CartModel = require('../mysql/Models/CartModel.js');
 
 exports.create_new_rooms = (req, res) => {
+    console.log(req.body);
     var room = new RoomModel(req.body);
     if (req.body.cartId) {
         CartModel.getCartByCartId(req.body.cartId, 1, (err, resul) => {
@@ -103,16 +104,21 @@ exports.create_new_rooms = (req, res) => {
 
 exports.get_room_details_by_userId = (req, res) => {
     if (req.params.id) {
+        // if (req.params.id === req.user.tokenUserId) {
         RoomDetailModel.getRoomDetailsByUserId(req.params.id, (error, result) => {
-            if (error) {
-                return res.status(400).send("Get Room Details failed!");
-            }
-            if (result && result.length !== 0) {
-                return res.status(200).send(result);
-            } else {
-                return res.status(404).send("Get Room Details does not exists!");
-            }
-        })
+                if (error) {
+                    return res.status(400).send("Get Room Details failed!");
+                }
+                if (result && result.length !== 0) {
+                    return res.status(200).send(result);
+                } else {
+                    return res.status(404).send("Get Room Details does not exists!");
+                }
+            })
+            // } else {
+            //     return res.status(403).send("Access denied!")
+            // }
+
     } else {
         return res.status(400).send("Bad Request!");
     }
@@ -133,26 +139,29 @@ exports.get_room_details_by_roomDetailId = (req, res) => {
 
 exports.checkRoomDetailBetWeenUsers = (req, res) => {
     if (req.params.userFromId && req.params.userToId) {
+        // if (req.params.userFromId === req.user.tokenUserId) {
         RoomDetailModel.checkExistGroupBetweenTwoUsers(req.params.userFromId, req.params.userToId, (error, result) => {
-            if (error) {
-                return res.status(400).send("Get Room Details failed!");
-            }
-            if (result && result.length === 1) {
-                RoomDetailModel.getRoomDetailsBetweenUsers(req.params.userFromId, req.params.userToId, (error, result) => {
-                    if (error) {
-                        return res.status(400).send("Get Room Details failed!");
-                    }
-                    if (result && result.length !== 0) {
-                        return res.status(200).send(result[0]);
-                    } else {
-                        return res.status(404).send("Get Room Details does not found!");
-                    }
-                })
-            } else {
-                return res.status(404).send("Get Room Details does not found!");
-            }
-        })
-
+                if (error) {
+                    return res.status(400).send("Get Room Details failed!");
+                }
+                if (result && result.length === 1) {
+                    RoomDetailModel.getRoomDetailsBetweenUsers(req.params.userFromId, req.params.userToId, (error, result) => {
+                        if (error) {
+                            return res.status(400).send("Get Room Details failed!");
+                        }
+                        if (result && result.length !== 0) {
+                            return res.status(200).send(result[0]);
+                        } else {
+                            return res.status(404).send("Get Room Details does not found!");
+                        }
+                    })
+                } else {
+                    return res.status(404).send("Get Room Details does not found!");
+                }
+            })
+            // } else {
+            //     return res.status(403).send("Access denied!")
+            // }
     } else {
         return res.status(400).send("Bad Request!");
     }

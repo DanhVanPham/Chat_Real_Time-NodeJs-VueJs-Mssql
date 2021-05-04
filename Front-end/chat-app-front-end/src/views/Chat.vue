@@ -237,6 +237,7 @@ export default {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  display: flex;
 }
 
 .input-field .input {
@@ -267,8 +268,8 @@ export default {
   cursor: pointer;
   position: absolute;
   right: 0;
-  top: 30%;
-  transform: translateY(-30%);
+  top: 50%;
+  transform: translateY(-50%);
   height: 36px;
   border: none;
   background-color: transparent;
@@ -279,7 +280,7 @@ export default {
   width: 26px;
   height: 26px;
   line-height: 36px;
-  margin: 0 auto;
+  margin: auto;
   transition: all 0.5s ease-in-out;
 }
 
@@ -299,8 +300,9 @@ export default {
   .chat-box-header h6 {
     font-size: 20px;
   }
-  .input-field {
-    width: 97%;
+  .icon {
+    top: 38%;
+    transform: translateY(-38%);
   }
 }
 
@@ -321,32 +323,12 @@ export default {
     padding-left: 10px;
   }
 
-  .icon {
-    width: 40px;
-    height: 32px;
-  }
-
-  .icon img {
-    width: 24px;
-    height: 24px;
-    line-height: 32px;
-  }
-
-  .icon img:hover {
-    width: 26px;
-    height: 26px;
-  }
   .typing {
     font-size: 0.6rem;
     margin-left: 10px;
   }
-  .input-field {
+  /* .input-field {
     width: 95%;
-  }
-}
-@media screen and (max-width: 350px) {
-  .input-field {
-    width: 90%;
-  }
+  } */
 }
 </style>

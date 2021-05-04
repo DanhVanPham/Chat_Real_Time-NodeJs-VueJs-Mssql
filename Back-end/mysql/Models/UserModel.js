@@ -156,6 +156,7 @@ function getUserByUserName(userName, callback) {
                     [userName]
                 ],
                 function(error, results) {
+                    console.log(results)
                     if (error) { callback(error, null); } else { callback(null, results) }
                 });
 

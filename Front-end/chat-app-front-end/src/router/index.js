@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import FirstPage from '../views/HelloWorld.vue';
 import Login from '../views/LoginPage.vue';
 import Register from '../views/RegisterPage.vue';
 import User from '../views/User.vue';
@@ -9,8 +8,8 @@ Vue.use(VueRouter);
 
 const routes = [{
         path: '/',
-        name: "FirstPage",
-        component: FirstPage
+        name: "Login",
+        component: Login
     },
     {
         path: '/login',
