@@ -21,33 +21,46 @@ var Users = function(user) {
 Users.registerAccount = (account, callback) => {
     let userId = moment().valueOf().toString();
     let status = 1;
-    bcrypt.hash(account.password, 10, (err, hash) => {
-        try {
-            // connection.connect();
-            connection.query("INSERT INTO Users(userId, userName, fullName, status, createdAt, password, avatar) VALUES ? ", [
-                    [
-                        [userId, account.userName, account.fullName, status, new Date(account.createdAt), hash, account.avatar]
-                    ]
-                ],
-                function(error, results) {
-                    if (error) { callback(err, null); } else { callback(null, results); }
-                });
+    console.log(account.userName);
+    getUserByUserName(account.userName.trim(), (err, user) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            console.log(user)
+            if (user && user.length !== 0) {
+                callback("Username have been exists!", null);
+            } else {
+                bcrypt.hash(account.password.trim(), 10, (err, hash) => {
+                    try {
+                        // connection.connect();
+                        connection.query("INSERT INTO Users(userId, userName, fullName, status, createdAt, password, avatar) VALUES ? ", [
+                                [
+                                    [userId, account.userName.trim(), account.fullName.trim(), status, new Date(account.createdAt), hash, account.avatar]
+                                ]
+                            ],
+                            function(error, results) {
+                                if (error) { callback(err, null); } else { callback(null, results); }
+                            });
 
-            // connection.end();
-        } catch (error) {
-            callback(error, null);
+                        // connection.end();
+                    } catch (error) {
+                        callback(error, null);
+                    }
+                });
+            }
         }
-    });
+    })
+
 }
 
 Users.loginAccount = (account, callback) => {
-    if (account.userName && account.password) {
-        getUserByUserName(account.userName, (err, user) => {
+    if (account.userName.trim() && account.password.trim()) {
+        getUserByUserName(account.userName.trim(), (err, user) => {
             if (err) {
                 callback(err, null);
             } else {
                 if (user) {
-                    bcrypt.compare(account.password, user[0].password, function(err, res) {
+                    bcrypt.compare(account.password.trim(), user[0].password, function(err, res) {
                         if (res) {
                             callback(null, user);
                         } else {
@@ -70,7 +83,7 @@ Users.editProfile = (userId, account, callback) => {
         if (userId === account.userId) {
             try {
                 // connection.connect();
-                connection.query("Update Users SET fullName = ? , avatar = ? WHERE userId = ? ", [account.fullName, account.avatar, account.userId],
+                connection.query("Update Users SET fullName = ? , avatar = ? WHERE userId = ? ", [account.fullName.trim(), account.avatar, account.userId],
                     function(error, results) {
                         if (error) { callback(err, null); } else { callback(null, results); }
                     });
@@ -97,7 +110,7 @@ Users.searchByName = (userId, search, callback) => {
     try {
         // connection.connect();
 
-        connection.query("SELECT userId, fullName, avatar, status FROM Users WHERE fullName like ? and userId != ?", [search, userId],
+        connection.query("SELECT userId, fullName, avatar, status FROM Users WHERE fullName like ? and userId != ?", [search.trim(), userId],
             function(error, results) {
                 if (error) { callback(error, null); } else {
                     callback(null, results);
@@ -112,7 +125,7 @@ Users.searchByName = (userId, search, callback) => {
 Users.changePassword = (account, callback) => {
     if (account.userName && account.oldPassword && account.newPassword && account.confirmPassword) {
         if (account.oldPassword === account.confirmPassword) {
-            getUserByUserName(account.userName, (err, user) => {
+            getUserByUserName(account.userName.trim(), (err, user) => {
                 if (err) {
                     callback(err, null);
                 } else {

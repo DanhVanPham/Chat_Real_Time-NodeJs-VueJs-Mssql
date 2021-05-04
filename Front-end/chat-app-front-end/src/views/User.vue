@@ -2,12 +2,11 @@
   <div class="list-user-container">
     <div class="current-user">
       <div class="header-form-user">
-        <div class="image-my-self" @click="signOut()">
+        <div class="image-my-self" @click="goToProfile()">
           <img :src="this.user.avatar" alt="avatar" class="avatar-my-self" />
         </div>
         <div class="display-name-my-self">
           <div class="name-my-self">{{ this.user.fullName }}</div>
-          <div class="status-my-self">Active now</div>
         </div>
         <div class="logout">
           <div class="add__multi" @click="changeStatusAddMulti()">
@@ -35,24 +34,13 @@
         >
           Create
         </button>
-        <div class="search-bar-user" v-if="this.search">
-          <div class="back__room__detail">
-            <i class="icon__back fa fa-arrow-left" @click="changeIcon"></i>
-            <div class="input-field">
-              <input
-                type="text"
-                placeholder="Enter name to search..."
-                name="search-user"
-                class="search-user"
-                v-model="searchName"
-                ref="inputSearchName"
-                @keydown.enter="searchUser($event)"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="search-bar-user" v-else>
-          <i class="icon__search fa fa-search"></i>
+        <div class="search-bar-user">
+          <i
+            class="icon__search fa fa-arrow-left"
+            v-if="this.search"
+            @click="changeIcon"
+          ></i>
+          <i class="icon__search fa fa-search" v-else @click="changeIcon"></i>
           <div class="input-field">
             <input
               type="text"
@@ -60,7 +48,8 @@
               name="search-user"
               class="search-user"
               v-model="searchName"
-              @focus="changeIcon"
+              @focus="changeStatusFieldSearch"
+              @keydown.enter="searchUser($event)"
             />
           </div>
         </div>
@@ -173,6 +162,9 @@ export default {
     },
   },
   methods: {
+    goToProfile() {
+      this.$router.push("/profile");
+    },
     async letChat(room) {
       await this.setMessages("");
       await this.getListMessagesByRoomDetail(room.roomDetailId);
@@ -228,6 +220,12 @@ export default {
         this.searchName = "";
       } else {
         this.search = true;
+      }
+    },
+    changeStatusFieldSearch() {
+      if (!this.search) {
+        this.search = true;
+        this.$nextTick(this.$refs.inputSearchName.focus());
       }
     },
     async checkExistAndletChat(userTo) {
@@ -428,15 +426,16 @@ export default {
   flex-direction: column;
 }
 .current-user .header-form-user {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  max-height: 18vh;
   flex-grow: 1;
-  max-height: 16vh;
 }
 
 .header-form-user .image-my-self {
   cursor: pointer;
+  text-align: center;
 }
 
 .header-form-user .image-my-self img.avatar-my-self {
@@ -451,20 +450,25 @@ export default {
 }
 
 .display-name-my-self .name-my-self {
-  font-weight: 600;
-  font-size: 1.3rem;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   text-align: center;
+  white-space: nowrap;
   font-family: "Arsenal", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  /* width: 80px; */
+  margin: auto;
 }
 
 /* Logout Header */
 
 .logout {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   height: 2rem;
+  text-align: center;
+  margin-bottom: 1rem;
   margin-left: 4px;
 }
 
@@ -472,21 +476,25 @@ export default {
   cursor: pointer;
   line-height: 2rem;
   margin-left: 4px;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .header-form-user .logout .button-logout {
   border-radius: 1.2rem;
-  padding: 2px 10px;
-  margin-left: 10px;
+  width: 40%;
+  padding: 2px 2px;
   background-color: black;
   color: white;
   border: none;
   outline: none;
+  margin: 0 auto;
 }
 
 .logout .button-logout:hover {
   background-color: #6c63ff;
   outline: none;
+  cursor: pointer;
 }
 
 /* Pagination between header and current user column user left */
@@ -505,7 +513,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   justify-items: center;
-  max-height: 68vh;
+  max-height: 65vh;
   flex-grow: 1;
 }
 
@@ -523,6 +531,7 @@ export default {
   top: 50%;
   left: 4%;
   transform: translate(-4%, -50%);
+  cursor: pointer;
 }
 
 .search-bar-user .input-field {
@@ -544,26 +553,6 @@ export default {
 
 .search-bar-user .input-field input:focus {
   box-shadow: 0px 2px 8px rgba(13, 227, 255, 0.952);
-}
-
-.back__room__detail {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  position: relative;
-}
-
-.back__room__detail .icon__back {
-  position: absolute;
-  left: 2%;
-  top: 50%;
-  transform: translate(-2%, -50%);
-  cursor: pointer;
-  margin-right: 2rem;
-}
-
-.back__room__detail .input-field {
-  flex-grow: 1;
 }
 
 /* List Current User Column User left */
@@ -688,75 +677,7 @@ export default {
   text-align: center;
   margin-top: 30px;
 }
-@media screen and (max-width: 950px) {
-  .current-user .header-form-user {
-    flex-direction: column;
-    justify-content: center;
-    justify-items: center;
-    max-height: 18vh;
-  }
-  .header-form-user .image-my-self {
-    text-align: center;
-  }
-  .user-container .display-name-user .name-user {
-    font-weight: 600;
-    font-size: 14px;
-    width: 80px;
-    margin: auto;
-  }
-  .logout {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 2rem;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
 
-  .add__multi {
-    cursor: pointer;
-    line-height: 2rem;
-  }
-  .form-list-users {
-    max-height: 65vh;
-  }
-}
-@media screen and (max-width: 914px) {
-  .display-name-my-self .status-my-self {
-    display: none;
-  }
-  /* .name-my-self {
-    font-size: 8px;
-    padding-top: 10px;
-    width: 50px;
-    margin: auto;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  } */
-}
-
-@media screen and (max-width: 815px) {
-  .user-container .display-name-user .name-user {
-    font-weight: 600;
-    font-size: 14px;
-    width: 80px;
-    margin: auto;
-  }
-  .logout {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 2rem;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-
-  .add__multi {
-    cursor: pointer;
-    line-height: 2rem;
-  }
-}
 @media screen and (max-width: 760px) {
   .list-user-container {
     background: rgb(252, 251, 251);
@@ -774,16 +695,9 @@ export default {
     width: 26vw;
     padding: 10px 4px 10px 10px;
   }
-  .current-user .header-form-user {
-    flex-direction: column;
-    justify-content: center;
-    justify-items: center;
-    max-height: 18vh;
+  .search-user {
+    font-size: 10px;
   }
-  .header-form-user .image-my-self {
-    text-align: center;
-  }
-
   .user-container .current-user-image {
     width: 20%;
   }
@@ -798,7 +712,11 @@ export default {
   .user-container .display-name-user .name-user {
     font-size: 12px;
     width: 68px;
-    font-weight: 600;
+  }
+
+  .form-list-users {
+    max-height: 75vh;
+    flex-grow: 1;
   }
 
   .message-user {
@@ -819,15 +737,6 @@ export default {
   .add__multi {
     line-height: 1.5rem;
     margin: 4px auto;
-  }
-
-  .back__room__detail .icon__back {
-    left: 4%;
-    transform: translate(-4%, -50%);
-  }
-
-  .back__room__detail .input-field {
-    flex-grow: 1;
   }
 }
 @media screen and (max-width: 644px) {
@@ -892,9 +801,7 @@ export default {
   .current-user-status {
     width: 30%;
   }
-  .pagination {
-    width: 110%;
-  }
+
   .content .new-image .avatar-my-self {
     width: 150px;
     height: 150px;

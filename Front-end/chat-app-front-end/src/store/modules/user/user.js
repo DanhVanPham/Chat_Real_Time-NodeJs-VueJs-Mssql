@@ -1,6 +1,6 @@
 import 'es6-promise';
 import AuthService from '../../../services/AuthServices';
-import { SET_USERS, SET_USER } from '../user/mutation-type';
+import { SET_USERS, SET_USER, EDIT_USER } from '../user/mutation-type';
 const state = {
     user: {},
     users: [],
@@ -19,6 +19,11 @@ const mutations = {
     },
     [SET_USER]: (state, credentials) => {
         state.user = credentials;
+    },
+    [EDIT_USER]: (state, credentials) => {
+        state.user.avatar = credentials.avatar;
+        state.user.fullName = credentials.fullName;
+        console.log(state.user);
     }
 };
 
@@ -82,6 +87,23 @@ const actions = {
             }
         } catch (error) {
             await commit(SET_USERS, "");
+            if (error.response.status === 403) {
+                return 403;
+            }
+            return 400;
+        }
+    },
+    async editProfileExist({ commit }, credentials) {
+        try {
+            var response = await AuthService.editProfile(credentials);
+            console.log(response);
+            if (response.status === 200) {
+                await commit(EDIT_USER, credentials);
+                return response.status;
+            } else {
+                return response.status;
+            }
+        } catch (error) {
             if (error.response.status === 403) {
                 return 403;
             }

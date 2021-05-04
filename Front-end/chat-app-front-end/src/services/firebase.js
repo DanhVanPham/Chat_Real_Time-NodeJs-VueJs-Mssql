@@ -1,11 +1,11 @@
  import firebase from 'firebase'
- var firebaseConfig = {
-     apiKey: "AIzaSyB5vvNFaspidg8vDjDwmry1DC6fnzDRGpY",
-     authDomain: "app-chat-firebase-4ae04.firebaseapp.com",
-     projectId: "app-chat-firebase-4ae04",
-     storageBucket: "app-chat-firebase-4ae04.appspot.com",
-     messagingSenderId: "1017539669956",
-     appId: "1:1017539669956:web:bcc7c2f0d823e42bae3e91"
+ const firebaseConfig = {
+     apiKey: "AIzaSyCgw-bComT965QWuSivrP9JKSfXGG1OqXQ",
+     authDomain: "chat-app-realtime-nodejs-mysql.firebaseapp.com",
+     projectId: "chat-app-realtime-nodejs-mysql",
+     storageBucket: "chat-app-realtime-nodejs-mysql.appspot.com",
+     messagingSenderId: "956909425606",
+     appId: "1:956909425606:web:89ed84d8066a032c5898c7"
  };
  firebase.initializeApp(firebaseConfig);
 

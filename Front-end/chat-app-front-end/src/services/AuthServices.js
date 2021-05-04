@@ -1,4 +1,4 @@
-import { post, get } from '../utils/apiCaller';
+import { post, get, put } from '../utils/apiCaller';
 
 class AuthService {
     async login(credentials) {
@@ -13,6 +13,10 @@ class AuthService {
 
     async searchUserByName(credentials) {
         return await get(`/users/${credentials.userId}/${credentials.searchName}`, {}, {});
+    }
+
+    async editProfile(credentials) {
+        return await put(`/users/${credentials.userId}`, {}, credentials, {});
     }
 }
 
