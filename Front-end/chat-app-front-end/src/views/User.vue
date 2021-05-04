@@ -755,6 +755,19 @@ export default {
   .content .welcome {
     margin-top: 50px;
   }
+  .header-form-user .logout .button-logout {
+    width: 60%;
+  }
+}
+@media screen and (max-width: 600px) {
+  /* Logout Header */
+
+  .header-form-user .logout .button-logout {
+    border-radius: 5px;
+    padding: 3px 10px;
+    margin: 0 auto;
+    font-size: 14px;
+  }
 }
 @media screen and (max-width: 540px) {
   .current-user .header-form-user {
@@ -764,9 +777,6 @@ export default {
     display: none;
   }
 
-  .header-form-user .logout {
-    display: none;
-  }
   .search-bar-user {
     display: none;
   }
@@ -781,12 +791,13 @@ export default {
     padding-top: 5px;
     width: 80px;
     margin: auto;
+    margin-bottom: 1rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .button-logout {
-    display: none;
+    font-size: 10px;
   }
 }
 
@@ -816,6 +827,10 @@ export default {
   .content .welcome h3 {
     font-size: 1rem;
   }
+  .header-form-user .logout .button-logout {
+    padding: 3px 5px;
+    font-size: 12px;
+  }
 }
 @media screen and (max-width: 360px) {
   .user-container .display-name-user {
@@ -823,8 +838,8 @@ export default {
   }
   .display-name-my-self .name-my-self {
     font-size: 9px;
-    padding-top: 2px;
-    margin: 0;
+    padding-top: 5px;
+    /* margin: 0; */
     margin-left: 8px;
     width: 50px;
   }
@@ -846,6 +861,10 @@ export default {
   .user-container .current-user-image img {
     width: 42px;
     height: 42px;
+  }
+  .header-form-user .logout .button-logout {
+    padding: 2px 4px;
+    font-size: 8px;
   }
 }
 </style>
