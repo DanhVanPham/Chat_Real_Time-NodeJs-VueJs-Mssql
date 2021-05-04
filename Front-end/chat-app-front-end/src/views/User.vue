@@ -9,15 +9,21 @@
           <div class="name-my-self">{{ this.user.fullName }}</div>
         </div>
         <div class="logout">
-          <div class="add__multi" @click="changeStatusAddMulti()">
-            <i class="fa fa-plus" v-if="!this.statusAddMultiUser"></i>
-            <i class="fas fa-minus" v-else></i>
+          <div class="add__multi noSelect">
+            <i class="icon__menu fa fa-bars" @click="showDialog()"></i>
+            <i
+              class="fa fa-plus"
+              @click="changeStatusAddMulti()"
+              v-if="!this.statusAddMultiUser"
+            ></i>
+            <i class="fas fa-minus" @click="changeStatusAddMulti()" v-else></i>
           </div>
           <button class="button-logout" @click="signOut()">Logout</button>
         </div>
       </div>
       <div style="margin-top: 25px" class="pagination" />
       <div class="form-list-users">
+        <i class="icon__exit fa fa-times" @click="hiddenDialog()"></i>
         <div class="search-bar-user" v-if="this.statusAddMultiUser">
           <div class="input-field">
             <Tags />
@@ -135,6 +141,7 @@ import Chat from "../views/Chat.vue";
 import Tags from "../components/tags/TagsInput.vue";
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import Vue from "vue";
+import $ from "jquery";
 export default {
   name: "User",
   components: { Chat, Tags },
@@ -149,6 +156,7 @@ export default {
       roomName: "",
       photoUrl:
         "https://gravatar.com/avatar/5adc5ab6ae861c87e576946e9e521675?s=400&d=robohash&r=x",
+      checkMenuVisible: false,
     };
   },
   computed: {
@@ -165,10 +173,24 @@ export default {
     goToProfile() {
       this.$router.push("/profile");
     },
+    showDialog() {
+      this.checkMenuVisible = true;
+      $(".form-list-users").css("display", "flex");
+      $(".icon__exit").css("visibility", "visible");
+    },
+    hiddenDialog() {
+      this.checkMenuVisible = false;
+      $(".form-list-users").css("display", "none");
+      $(".icon__exit").css("visibility", "hidden");
+      this.statusAddMultiUser = false;
+    },
     async letChat(room) {
       await this.setMessages("");
       await this.getListMessagesByRoomDetail(room.roomDetailId);
       await this.setCurrentRoomDetail(room);
+      if (this.checkMenuVisible) {
+        this.hiddenDialog();
+      }
       this.$socket.emit("leave");
       this.$socket.emit("createRoom", room);
     },
@@ -213,7 +235,6 @@ export default {
     changeStatusFieldSearch() {
       if (!this.search) {
         this.search = true;
-        this.$nextTick(this.$refs.inputSearchName.focus());
       }
     },
     async checkExistAndletChat(userTo) {
@@ -225,7 +246,6 @@ export default {
         let response = await this.checkRoomDetailsExist(credentials);
         if (response === 200) {
           this.letChat(this.currentRoomDetail);
-          this.$socket.emit("createRoom", this.currentRoomDetail);
         } else {
           let newRoomDetail = {
             roomNameFrom: this.user.fullName,
@@ -346,6 +366,7 @@ export default {
       this.$router.push("/login");
     }
     this.getUserList();
+    console.log(this.roomDetails);
     window.onbeforeunload = () => {
       this.$socket.emit("leave");
     };
@@ -472,6 +493,27 @@ export default {
   justify-items: center;
   max-height: 65vh;
   flex-grow: 1;
+}
+
+.icon__menu {
+  display: none;
+}
+
+.icon__exit {
+  margin-left: auto;
+  margin-top: 0.6rem;
+  margin-right: 0.6rem;
+  cursor: pointer;
+  transition: transform 1s ease-in-out;
+  visibility: hidden;
+}
+
+.icon__exit:hover {
+  transform: rotate(360deg);
+}
+
+.icon__exit:focus {
+  transform: rotate(360deg);
 }
 
 /* Search bar */
@@ -635,6 +677,15 @@ export default {
   margin-top: 30px;
 }
 
+.noSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 @media screen and (max-width: 760px) {
   .list-user-container {
     background: rgb(252, 251, 251);
@@ -713,7 +764,7 @@ export default {
     margin-top: 50px;
   }
   .header-form-user .logout .button-logout {
-    width: 60%;
+    width: fit-content;
   }
 }
 @media screen and (max-width: 600px) {
@@ -727,45 +778,108 @@ export default {
   }
 }
 @media screen and (max-width: 540px) {
+  .list-user-container {
+    flex-direction: column;
+  }
+  .list-user-container .current-user {
+    width: 100vw;
+    max-width: 100vw;
+    height: 15vh;
+    flex-direction: row;
+    padding: 20px;
+    flex-grow: 1;
+    border-bottom: 1px solid rgb(211, 210, 208);
+  }
   .current-user .header-form-user {
-    height: 5vh;
-  }
-  .add__multi {
-    display: none;
-  }
-
-  .search-bar-user {
-    display: none;
-  }
-  .search-bar-user {
-    display: none;
-  }
-  .list-users {
-    height: 80vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
   .display-name-my-self .name-my-self {
-    font-size: 14px;
+    font-size: 1.3rem;
     padding-top: 5px;
-    width: 80px;
+    width: 180px;
     margin: auto;
     margin-bottom: 1rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .icon__menu {
+    display: inline-block;
+    margin-right: 1rem;
+  }
+  .logout {
+    flex-direction: row;
+  }
+  .header-form-user .logout .button-logout {
+    margin-left: 1rem;
+  }
+
+  .list-user-container .content {
+    border: none;
+    width: 100vw;
+  }
+
+  .pagination {
+    display: none;
+  }
+
   .button-logout {
     font-size: 10px;
+  }
+
+  .form-list-users {
+    background-color: whitesmoke;
+    position: absolute;
+    top: 15%;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 9999;
+    display: none;
+  }
+  .search-bar-user {
+    margin-top: 1rem;
+    outline: none;
+    border: none;
+  }
+  .search-bar-user .icon__search {
+    top: 50%;
+    left: 2%;
+    transform: translate(-2%, -50%);
+  }
+  .search-bar-user .input-field .search-user {
+    border: none;
+    outline: none;
+  }
+  .user-container .current-user-image {
+    text-align: center;
+    margin: auto;
+    margin-right: 0;
+    margin-left: 0;
+  }
+  .user-container .current-user-image img {
+    width: 42px;
+    height: 42px;
+  }
+
+  .user-container .display-name-user {
+    margin-left: 0;
+  }
+
+  .user-container .display-name-user .name-user {
+    width: 200px;
+    font-size: 19px;
+  }
+
+  .message-user {
+    width: 200px;
   }
 }
 
 @media screen and (max-width: 460px) {
-  .list-user-container .current-user {
-    padding: 5px 2px 5px 5px;
-  }
-  .display-name-my-self {
-    margin-left: 0;
-  }
-
   .current-user-status {
     width: 30%;
   }
@@ -790,15 +904,10 @@ export default {
   }
 }
 @media screen and (max-width: 360px) {
-  .user-container .display-name-user {
-    display: none;
-  }
   .display-name-my-self .name-my-self {
-    font-size: 9px;
+    font-size: 1rem;
     padding-top: 5px;
-    /* margin: 0; */
-    margin-left: 8px;
-    width: 50px;
+    width: 100px;
   }
   .header-form-user .image-my-self img.avatar-my-self {
     width: 40px;
@@ -815,13 +924,11 @@ export default {
   .content .welcome {
     margin-top: 40px;
   }
-  .user-container .current-user-image img {
-    width: 42px;
-    height: 42px;
-  }
+
   .header-form-user .logout .button-logout {
-    padding: 2px 4px;
-    font-size: 8px;
+    padding: 3px 5px;
+    font-size: 10px;
+    margin: 0 0.4rem 0 0.8rem;
   }
 }
 </style>

@@ -3,7 +3,6 @@ const RoomDetailModel = require('../mysql/Models/RoomDetailModel.js');
 const CartModel = require('../mysql/Models/CartModel.js');
 
 exports.create_new_rooms = (req, res) => {
-    console.log(req.body);
     var room = new RoomModel(req.body);
     if (req.body.cartId) {
         CartModel.getCartByCartId(req.body.cartId, 1, (err, resul) => {

@@ -242,7 +242,15 @@ p.link-create a:hover {
 .input.gmail {
   padding: 8px 10px;
 }
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 760px) {
+  .form-container .form {
+    height: 100vh;
+    width: 100vw;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
   .input-field h5 {
     margin-top: 0px;
     font-size: 17px;
@@ -256,14 +264,6 @@ p.link-create a:hover {
   }
 }
 @media screen and (max-width: 435px) {
-  .form-container .form {
-    height: 100vh;
-    width: 100vw;
-    border-radius: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
   .form-container .form .title {
     font-weight: 400;
     font-size: 1.6rem;

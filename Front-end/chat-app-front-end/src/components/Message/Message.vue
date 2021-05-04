@@ -138,6 +138,9 @@ export default {
   .message-wrapper .message.right img {
     display: none;
   }
+  .messages .message-wrapper .message.right .display {
+    margin-right: 10px;
+  }
 }
 @media screen and (max-width: 460px) {
   .message-wrapper {
@@ -151,10 +154,6 @@ export default {
     width: 70%;
     margin-right: 8px;
     margin-bottom: 8px;
-  }
-
-  .messages .message-wrapper .message.right .display {
-    margin-right: 10px;
   }
 
   .display .display-name.left {

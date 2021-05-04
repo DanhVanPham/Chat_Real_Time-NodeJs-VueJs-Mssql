@@ -151,7 +151,7 @@ Carts.removeUserExistInCart = (cartDetailId, callback) => {
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }
@@ -164,14 +164,13 @@ Carts.deleteAllCartDetailByCartId = (cartId, callback) => {
         connection.query("UPDATE CartDetails SET status = ?" +
             " WHERE cartDetailId IN (SELECT cartDetailId FROM(SELECT cartDetailId FROM CartDetails WHERE cartId = ? and status = ?) as x)", [changeStatus, cartId, defaultStatus],
             function(error, results) {
-                console.log(error);
                 if (error) { callback(error, null); } else {
                     callback(null, results);
                 }
             });
         // connection.end();
     } catch (error) {
-        console.log(error);
+        callback(error, null);
     }
 
 }

@@ -21,12 +21,10 @@ var Users = function(user) {
 Users.registerAccount = (account, callback) => {
     let userId = moment().valueOf().toString();
     let status = 1;
-    console.log(account.userName);
     getUserByUserName(account.userName.trim(), (err, user) => {
         if (err) {
             callback(err, null);
         } else {
-            console.log(user)
             if (user && user.length !== 0) {
                 callback("Username have been exists!", null);
             } else {
@@ -169,7 +167,6 @@ function getUserByUserName(userName, callback) {
                     [userName]
                 ],
                 function(error, results) {
-                    console.log(results)
                     if (error) { callback(error, null); } else { callback(null, results) }
                 });
 

@@ -294,9 +294,10 @@ export default {
   .chat-box-header h6 {
     font-size: 20px;
   }
-  .icon {
-    top: 38%;
-    transform: translateY(-38%);
+  .icon img {
+    line-height: 32px;
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -321,8 +322,39 @@ export default {
     font-size: 0.6rem;
     margin-left: 10px;
   }
-  /* .input-field {
-    width: 95%;
-  } */
+}
+@media screen and (max-width: 540px) {
+  .chat-box-header {
+    justify-content: center;
+  }
+
+  .chat-box-header .avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .chat-box-header h6 {
+    font-size: 1.2rem;
+    width: 180px;
+    margin-bottom: 1rem;
+    margin: auto 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chat-box-message {
+    max-height: 65vh;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .chat-box-header .avatar {
+    width: 40px;
+    height: 40px;
+  }
+  .chat-box-header h6 {
+    font-size: 1rem;
+    width: 140px;
+  }
 }
 </style>

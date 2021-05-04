@@ -23,7 +23,6 @@ const mutations = {
     [EDIT_USER]: (state, credentials) => {
         state.user.avatar = credentials.avatar;
         state.user.fullName = credentials.fullName;
-        console.log(state.user);
     }
 };
 
@@ -93,7 +92,6 @@ const actions = {
     async editProfileExist({ commit }, credentials) {
         try {
             var response = await AuthService.editProfile(credentials);
-            console.log(response);
             if (response.status === 200) {
                 await commit(EDIT_USER, credentials);
                 return response.status;
