@@ -37,7 +37,6 @@
 <script>
 import MessageList from "../components/MessageList/MessageList.vue";
 import { mapActions, mapGetters, mapMutations } from "vuex";
-import Vue from "vue";
 export default {
   components: { MessageList },
   props: ["currentRoom", "userIdSelf"],
@@ -112,11 +111,6 @@ export default {
             roomId: this.currentRoom.roomId,
           });
           this.message = "";
-        } else if (response === 403) {
-          this.setEmpty();
-          Vue.toasted.show("Access denied!").goAway(1500);
-          Vue.toasted.show("You need to login.").goAway(1500);
-          this.$router.push("/login");
         }
       }
       this.$refs["scrollable"].scrollIntoView({ behavior: "smooth" });

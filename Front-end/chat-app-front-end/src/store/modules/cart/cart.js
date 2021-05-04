@@ -43,9 +43,6 @@ const actions = {
             }
         } catch (error) {
             await commit(SET_CART, "");
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     },
@@ -59,9 +56,6 @@ const actions = {
                 return response.status;
             }
         } catch (error) {
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     },
@@ -76,9 +70,6 @@ const actions = {
                 return response.status;
             }
         } catch (error) {
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     },
@@ -95,9 +86,6 @@ const actions = {
             }
         } catch (error) {
             await commit(SET_CART_DETAILS, "");
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     },
@@ -112,9 +100,6 @@ const actions = {
                 return response.status;
             }
         } catch (error) {
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     },

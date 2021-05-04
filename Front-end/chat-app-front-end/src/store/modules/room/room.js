@@ -47,9 +47,6 @@ const actions = {
                 return response.status;
             }
         } catch (error) {
-            if (error.response.status === 403) {
-                return 403;
-            }
             await commit(SET_ROOM_DETAILS, "");
             return 400;
         }
@@ -65,9 +62,6 @@ const actions = {
                 return response.status;
             }
         } catch (error) {
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     },
@@ -83,9 +77,6 @@ const actions = {
                 return response.status;
             }
         } catch (error) {
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     },
@@ -100,9 +91,6 @@ const actions = {
                 return response.status;
             }
         } catch (error) {
-            if (error.response.status === 403) {
-                return 403;
-            }
             return 400;
         }
     }

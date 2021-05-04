@@ -191,13 +191,7 @@ export default {
     },
     async getUserList() {
       if (this.user.userId) {
-        let response = await this.getRoomByUser(this.user.userId);
-        if (response === 403) {
-          this.setEmpty();
-          Vue.toasted.show("Access denied!").goAway(1500);
-          Vue.toasted.show("You need to login.").goAway(1500);
-          this.$router.push("/login");
-        }
+        await this.getRoomByUser(this.user.userId);
       }
     },
     async searchUser(event) {
@@ -206,13 +200,7 @@ export default {
         userId: this.user.userId,
         searchName: this.searchName,
       };
-      let response = await this.searchUsers(credentials);
-      if (response === 403) {
-        this.setEmpty();
-        Vue.toasted.show("Access denied!").goAway(1500);
-        Vue.toasted.show("You need to login.").goAway(1500);
-        this.$router.push("/login");
-      }
+      await this.searchUsers(credentials);
     },
     changeIcon() {
       if (this.search) {
@@ -238,11 +226,6 @@ export default {
         if (response === 200) {
           this.letChat(this.currentRoomDetail);
           this.$socket.emit("createRoom", this.currentRoomDetail);
-        } else if (response === 403) {
-          this.setEmpty();
-          Vue.toasted.show("Access denied!").goAway(1500);
-          Vue.toasted.show("You need to login.").goAway(1500);
-          this.$router.push("/login");
         } else {
           let newRoomDetail = {
             roomNameFrom: this.user.fullName,
@@ -256,11 +239,8 @@ export default {
           if (response === 200) {
             Vue.toasted.show("Create new room successfully").goAway(1500);
             this.letChat(this.currentRoomDetail);
-          } else if (response === 403) {
-            this.setEmpty();
-            Vue.toasted.show("Access denied!").goAway(1500);
-            Vue.toasted.show("You need to login.").goAway(1500);
-            this.$router.push("/login");
+          } else {
+            Vue.toasted.show("Create new room failed").goAway(1500);
           }
         }
       } else {
@@ -271,12 +251,7 @@ export default {
       if (!this.statusAddMultiUser) {
         this.statusAddMultiUser = true;
         let response = await this.getCartByUserId(this.user.userId);
-        if (response === 403) {
-          this.setEmpty();
-          Vue.toasted.show("Access denied!").goAway(1500);
-          Vue.toasted.show("You need to login.").goAway(1500);
-          this.$router.push("/login");
-        } else if (response === 200) {
+        if (response === 200) {
           this.getAllCartDetails();
         } else {
           this.createCartByUser();
@@ -295,12 +270,7 @@ export default {
         };
         let response = await this.addUserInCart(credentials);
 
-        if (response === 403) {
-          this.setEmpty();
-          Vue.toasted.show("Access denied!").goAway(1500);
-          Vue.toasted.show("You need to login.").goAway(1500);
-          this.$router.push("/login");
-        } else if (response === 200) {
+        if (response === 200) {
           Vue.toasted.show("Add user to cart successfully").goAway(1500);
         } else {
           Vue.toasted
@@ -318,11 +288,8 @@ export default {
       if (response === 200) {
         Vue.toasted.show("Create new cart successfully").goAway(1500);
         this.getAllCartDetails();
-      } else if (response === 403) {
-        this.setEmpty();
-        Vue.toasted.show("Access denied!").goAway(1500);
-        Vue.toasted.show("You need to login.").goAway(1500);
-        this.$router.push("/login");
+      } else {
+        Vue.toasted.show("Create new cart failed!").goAway(1500);
       }
     },
     async getAllCartDetails() {
@@ -330,11 +297,6 @@ export default {
         let response = await this.getCartDetails(this.cart.cartId);
         if (response === 200) {
           Vue.toasted.show("Get successful").goAway(1500);
-        } else if (response === 403) {
-          this.setEmpty();
-          Vue.toasted.show("Access denied!").goAway(1500);
-          Vue.toasted.show("You need to login.").goAway(1500);
-          this.$router.push("/login");
         }
       }
     },
@@ -356,11 +318,6 @@ export default {
         this.statusAddMultiUser = false;
         this.searchName = "";
         this.search = false;
-      } else if (response === 403) {
-        this.setEmpty();
-        Vue.toasted.show("Access denied!").goAway(1500);
-        Vue.toasted.show("You need to login.").goAway(1500);
-        this.$router.push("/login");
       } else {
         Vue.toasted.show("Create new group failed!").goAway(1500);
       }

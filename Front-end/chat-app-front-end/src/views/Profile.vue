@@ -115,8 +115,6 @@ export default {
       if (response === 200) {
         Vue.toasted.show("Edit profile successfully.").goAway(1500);
         this.$router.push("/users");
-      } else if (response === 403) {
-        Vue.toasted.show("Access denied!").goAway(1500);
       } else {
         Vue.toasted.show("Edit profile failed!").goAway(1500);
       }

@@ -37,47 +37,38 @@ exports.logout = async(req, res) => {
 }
 
 exports.edit_profile = (req, res) => {
-    // if (req.params.id === req.user.tokenUserId) {
     var user = new UserModel(req.body);
     UserModel.editProfile(req.params.id, user, function callback(error, result) {
-            if (error) {
-                return res.status(400).send(error);
-            }
-            return res.status(200).send(result);
-        })
-        // } else {
-        // return res.status(403).send("Access denied!");
-        // }
+        if (error) {
+            return res.status(400).send(error);
+        }
+        return res.status(200).send(result);
+    })
+
 }
 
 exports.change_password = (req, res) => {
-    // if (req.body.userName == req.user.tokenUserName) {
     UserModel.changePassword(req.body, function callback(error, result) {
-            if (error) {
-                return res.status(400).send(error);
-            }
-            return res.status(200).send(result);
-        })
-        // } else {
-        //     return res.status(403).send("Access denied!");
-        // }
+        if (error) {
+            return res.status(400).send(error);
+        }
+        return res.status(200).send(result);
+    })
+
 
 }
 
 exports.searchUserByName = (req, res) => {
-    // if (req.params.userId === req.user.tokenUserId) {
     UserModel.searchByName(req.params.userId, req.params.search, (error, result) => {
-            if (error) {
-                return res.status(400).send(error);
-            }
-            if (result && result.length !== 0) {
-                return res.status(200).send(result);
-            } else {
-                return res.status(404).send("Get user does not found!");
-            }
-        })
-        // } else {
-        //     return res.status(403).send("Access denied!");
-        // }
+        if (error) {
+            return res.status(400).send(error);
+        }
+        if (result && result.length !== 0) {
+            return res.status(200).send(result);
+        } else {
+            return res.status(404).send("Get user does not found!");
+        }
+    })
+
 
 }

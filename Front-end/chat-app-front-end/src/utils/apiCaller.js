@@ -13,6 +13,7 @@ export const request = (endpoint, method, headers, body, params) => {
         data: body,
         params: Object.assign(params),
         withCredentials: true,
+        credentials: 'include',
     })
 }
 

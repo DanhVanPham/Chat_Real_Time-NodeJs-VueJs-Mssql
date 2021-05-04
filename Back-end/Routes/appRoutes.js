@@ -1,5 +1,4 @@
 const baseUrl = '/v1/api';
-const verifyToken = require('../Tokens/VerifyToken.js');
 const userController = require('../Controllers/UserController.js');
 const roomController = require('../Controllers/RoomController.js');
 const cartController = require('../Controllers/CartController.js');
