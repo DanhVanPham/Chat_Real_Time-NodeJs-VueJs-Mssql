@@ -12,4 +12,4 @@
 
 ##### URL Backend:  See [Heroku](https://chat-app-danhpv.herokuapp.com/v1/api)
 
-##### URL Website:  See [Firebase](https://chat-app-realtime-nodejs-mysql.web.app/)
+##### URL Website:  See [Chat-App](https://chat-app-realtime-nodejs-mysql.web.app/)
