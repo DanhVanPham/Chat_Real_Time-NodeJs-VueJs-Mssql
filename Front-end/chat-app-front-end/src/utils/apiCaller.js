@@ -7,7 +7,7 @@ export const defaultHeader = {
 
 export const request = (endpoint, method, headers, body, params) => {
     return Axios({
-        url: 'http://localhost:8082/v1/api' + endpoint,
+        url: 'https://chat-app-danhpv.herokuapp.com/v1/api' + endpoint,
         method: method,
         headers: {...defaultHeader, ...headers },
         data: body,

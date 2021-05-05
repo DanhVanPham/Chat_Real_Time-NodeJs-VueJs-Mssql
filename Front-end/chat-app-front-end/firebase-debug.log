@@ -1,0 +1,13 @@
+[debug] [2021-05-05T04:48:39.252Z] ----------------------------------------------------------------------
+[debug] [2021-05-05T04:48:39.255Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\DELL\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2021-05-05T04:48:39.255Z] CLI Version:   9.10.0
+[debug] [2021-05-05T04:48:39.255Z] Platform:      win32
+[debug] [2021-05-05T04:48:39.256Z] Node Version:  v14.15.4
+[debug] [2021-05-05T04:48:39.257Z] Time:          Wed May 05 2021 11:48:39 GMT+0700 (Indochina Time)
+[debug] [2021-05-05T04:48:39.257Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-05-05T04:48:39.265Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-05-05T04:48:39.265Z] > authorizing via signed-in user (danhpvse141028@fpt.edu.vn)
+[debug] [2021-05-05T04:48:39.266Z] [iam] checking project chat-app-realtime-nodejs-mysql for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-05-05T04:48:39.268Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/chat-app-realtime-nodejs-mysql:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}

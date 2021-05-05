@@ -21,7 +21,6 @@
           <button class="button-logout" @click="signOut()">Logout</button>
         </div>
       </div>
-      <div style="margin-top: 25px" class="pagination" />
       <div class="form-list-users">
         <i class="icon__exit fa fa-times" @click="hiddenDialog()"></i>
         <div class="search-bar-user" v-if="this.statusAddMultiUser">
@@ -210,6 +209,7 @@ export default {
       this.setMessages("");
       this.setCartDetails("");
       this.setRoomDetails("");
+      this.addUsers("");
     },
     async getUserList() {
       if (this.user.userId) {
@@ -359,7 +359,7 @@ export default {
     ...mapMutations("room", ["setCurrentRoomDetail", "setRoomDetails"]),
     ...mapMutations("message", ["setMessages"]),
     ...mapMutations("cart", ["setCartDetails"]),
-    ...mapMutations("user", ["setUser"]),
+    ...mapMutations("user", ["setUser", "addUsers"]),
   },
   created() {
     if (localStorage.getItem("userId") === null) {
@@ -473,15 +473,6 @@ export default {
   background-color: #6c63ff;
   outline: none;
   cursor: pointer;
-}
-
-/* Pagination between header and current user column user left */
-
-.pagination {
-  height: 1px;
-  width: 100%;
-  background-color: rgb(187, 179, 179);
-  /* flex-grow: 1; */
 }
 
 /* Current User Column User left */
@@ -784,9 +775,9 @@ export default {
   .list-user-container .current-user {
     width: 100vw;
     max-width: 100vw;
-    height: 15vh;
+    max-height: 15vh;
     flex-direction: row;
-    padding: 20px;
+    padding: 10px 10px 0 10px;
     flex-grow: 1;
     border-bottom: 1px solid rgb(211, 210, 208);
   }
@@ -820,10 +811,6 @@ export default {
   .list-user-container .content {
     border: none;
     width: 100vw;
-  }
-
-  .pagination {
-    display: none;
   }
 
   .button-logout {

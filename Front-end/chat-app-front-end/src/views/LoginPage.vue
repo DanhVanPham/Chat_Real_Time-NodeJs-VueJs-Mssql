@@ -306,7 +306,7 @@ export default {
   .login__container {
     width: 100%;
     min-height: 100vh;
-    margin: 10px auto;
+    margin: 0 auto;
     border-radius: 0px;
     display: flex;
     flex-direction: column;

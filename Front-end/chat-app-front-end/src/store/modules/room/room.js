@@ -23,6 +23,7 @@ const mutations = {
     },
     [ADD_ROOM_DETAIL]: (state, credentials) => {
         state.roomDetails = state.roomDetails || [];
+        credentials.content = null;
         state.roomDetails.push(credentials);
     },
     [SET_MESSAGES_ROOM_DETAIL]: (state, credentials) => {
@@ -69,10 +70,11 @@ const actions = {
     async createRoomDetails({ commit }, credentials) {
         try {
             var response = await RoomService.createNewRoom(credentials);
+            console.log(response.data);
             if (response.status === 200) {
                 await commit(ADD_ROOM_DETAIL, response.data);
                 await commit(CURRENT_ROOM_DETAIL, response.data);
-                return response;
+                return response.status;
             } else {
                 return response.status;
             }
