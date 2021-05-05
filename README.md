@@ -8,36 +8,36 @@
 
 ### Front-end: Vuejs, Vuex, Vue-router, FireBase(Using upload image) 
 
-1. Login Page Image :
+### Login Page Image :
 
-1.1 PC:
+##### PC:
   ![Login_Page_Pc](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_PC/login-page-pc.png)
   
-1.2 Mobile:
+##### Mobile:
   ![Login_Page_Mobile](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_Mobile/login-page-mobile.png)
   
-2. Register Page Image:
+### Register Page Image:
 
-2.1 PC:
+##### PC:
   ![Register_Page_PC](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_PC/register-pc.png)
   
-2.2 Mobile:
+##### Mobile:
   ![Register_Page_Mobile](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_Mobile/register-mobile.png)
 
-3 Main Page Chat
+### Main Page Chat
 
-3.1 PC:
+##### PC:
   ![Main_Page_Chat_PC](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_PC/main-page-pc.png)
 
-3.2 Mobile:
+##### Mobile:
   ![Main_Page_Chat_Mobile](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_Mobile/room-chat-mobile.png)
   
-4 Edit Profile Page
+### Edit Profile Page
 
-4.1 PC:
+##### PC:
   ![Edit_Profile_Page_PC](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_PC/edit-profile-page-pc.png)
 
-4.2 Mobile:
+##### Mobile:
   ![Edit_Profile_Page_Mobile](https://github.com/DanhVanPham/Chat_Real_Time-NodeJs-VueJs-Mssql/blob/main/Image/Image_Mobile/edit-profile-mobile.png)
 
 ##### URL Database: See [Mysql](https://console.clever-cloud.com/users/me/addons/addon_6cc9937f-6ce8-430f-82c2-618dd3caa3f3)
